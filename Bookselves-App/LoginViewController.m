@@ -22,7 +22,6 @@
 @property (weak, nonatomic) IBOutlet UITextField *inputEmail_signIn;
 @property (weak, nonatomic) IBOutlet UITextField *inputPassword_signIn;
 
-
 @end
 
 @implementation LoginViewController
