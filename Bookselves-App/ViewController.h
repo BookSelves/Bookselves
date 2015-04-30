@@ -10,6 +10,7 @@
 
 @interface ViewController : UIViewController
 
+@property (nonatomic) int user_id;
 
 @end
 

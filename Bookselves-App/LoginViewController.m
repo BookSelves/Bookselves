@@ -10,6 +10,7 @@
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <FBSDKLoginKit/FBSDKLoginKit.h>
 #import "constants.h"
+#import "ViewController.h"
 
 @interface LoginViewController ()
 @property (weak, nonatomic) IBOutlet UITextField *inputEmail;
@@ -71,8 +72,54 @@
                      }];
 }
 
+- (IBAction)signInButtonHandler:(id)sender {
+    if ([self.inputEmail_signIn.text isEqualToString:@""] || [self.inputPassword_signIn.text isEqualToString:@""]) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Email or Password can't be empty"
+                                                        message:@"You must enter both email and password to log in"
+                                                       delegate:nil
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles:nil];
+        [alert show];
+    }else {
+        NSLog(@"verifying user information");
+        
+        NSDictionary *signInInputData = [[NSDictionary alloc] initWithObjectsAndKeys:self.inputEmail_signIn.text, @"username", self.inputPassword_signIn.text, @"password", nil];
+        //NSLog([self appendEncodedDictionary:signInInputData ToURL:[NSString stringWithFormat:@"%@/user/verify?", serverURL]]);
+        NSString* verifyUserServerReply = [self sendRequestToURL:[self appendEncodedDictionary:signInInputData ToURL:[NSString stringWithFormat:@"%@/user/verify?", serverURL]]
+                      
+                                                        withData:nil
+                    
+                                                      withMethod:@"GET"];
+        NSLog(verifyUserServerReply);
+        
+        NSDictionary *verifyUserServerReplyDictionary = (NSDictionary *)[NSJSONSerialization JSONObjectWithData:[verifyUserServerReply dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
+        
+        //if user exists go back to the profile view controller.
+        if (verifyUserServerReplyDictionary[@"success"] != nil) {
+            
+            //store user information into NSUserDefault
+            [[NSUserDefaults standardUserDefaults] setObject:signInInputData[@"username"] forKey:@"username"];
+            [[NSUserDefaults standardUserDefaults] setObject:signInInputData[@"password"] forKey:@"password"];
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"EmailUserIdChangeNotification" object:nil userInfo:verifyUserServerReplyDictionary];
+            
+            [self dismissViewControllerAnimated:YES
+                                     completion:^{
+                                         NSLog(@"User log in via Email");
+                                     }];
+        }else {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error"
+                                                            message:verifyUserServerReplyDictionary[@"error"]
+                                                           delegate:nil
+                                                  cancelButtonTitle:@"OK"
+                                                  otherButtonTitles:nil];
+            [alert show];
+        }
+    }
+}
 
 #pragma mark - user registration
+
 - (IBAction)signUpButtonHandler:(id)sender {
     [UIView animateWithDuration:0.3
                      animations:^{
@@ -103,16 +150,50 @@
         
         NSDictionary *registrationData = [[NSDictionary alloc] initWithObjectsAndKeys:self.inputEmail.text, @"username", self.inputPassword.text, @"password", nil];
         
-        NSString *serverReplyData = [self sendRequestToURL:[NSString stringWithFormat:@"%@/user/create", serverURL]
-                      withData:registrationData
-                          withMethod:@"POST"];
-        NSLog(serverReplyData);
+        NSString *registerUserServerReply = [self sendRequestToURL:[NSString stringWithFormat:@"%@/user/create", serverURL]
+                      
+                                                  withData:registrationData
+                          
+                                                withMethod:@"POST"];
+        NSLog(registerUserServerReply);
         
+        NSDictionary *registerUserServerReplyDictionary = (NSDictionary *)[NSJSONSerialization JSONObjectWithData:[registerUserServerReply dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
+        
+        //if registered successfully, log user in and dismiss current view controller
+        if (registerUserServerReplyDictionary[@"success"] != nil) {
+            
+            //store user information into NSUserDefault
+            [[NSUserDefaults standardUserDefaults] setObject:registrationData[@"username"] forKey:@"username"];
+            [[NSUserDefaults standardUserDefaults] setObject:registrationData[@"password"] forKey:@"password"];
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"EmailUserIdChangeNotification" object:nil userInfo:registerUserServerReplyDictionary];
+            
+            [self dismissViewControllerAnimated:YES
+                                     completion:^{
+                                         NSLog(@"user finished registration and logs in");
+                                     }];
+        }else {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error"
+                                                            message:registerUserServerReplyDictionary[@"erro"]
+                                                           delegate:nil
+                                                  cancelButtonTitle:@"OK"
+                                                  otherButtonTitles:nil];
+            [alert show];
+        }
     }
 }
 
-- (NSData*)encodeDictionary:(NSDictionary*)dictionary
+#pragma mark - formatize URL
+
+//will be used for verification
+- (NSString*) appendEncodedDictionary:(NSDictionary*)dictionary ToURL:(NSString*)url
 {
+    return [url stringByAppendingString:[NSString stringWithFormat:@"%@", [self turnDictionaryIntoParamsOfURL:dictionary]]];
+}
+
+- (NSString *) turnDictionaryIntoParamsOfURL:(NSDictionary*)dictionary
+{
+    
     NSMutableArray *parts = [[NSMutableArray alloc] init];
     for (NSString *key in dictionary)
     {
@@ -122,6 +203,13 @@
         [parts addObject:part];
     }
     NSString *encodedDictionary = [parts componentsJoinedByString:@"&"];
+    return encodedDictionary;
+}
+
+- (NSData*)encodeDictionary:(NSDictionary*)dictionary
+{
+    NSString *encodedDictionary = [self turnDictionaryIntoParamsOfURL:dictionary];
+    //NSLog(encodedDictionary);
     return [encodedDictionary dataUsingEncoding:NSUTF8StringEncoding];
 }
 
@@ -136,6 +224,7 @@
     NSData* result = [NSURLConnection sendSynchronousRequest:urlRequest  returningResponse:&response error:&error];
     if([response statusCode] >= 400 || [response statusCode] == 0)
     {
+        NSLog(@"%@", [error description]);
         return nil;
     }
     return [[NSString alloc] initWithData:result encoding:NSUTF8StringEncoding];

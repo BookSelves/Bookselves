@@ -11,5 +11,10 @@
 @implementation constants
 
 NSString* const serverURL = @"http://bookselves.herokuapp.com";
+NSString* const createUSerURL =@"http://bookselves.herokuapp.com/user/create";
+NSString* const verifyUSerURL =@"http://bookselves.herokuapp.com/user/verify";
+NSString* const updateUSerURL =@"http://bookselves.herokuapp.com/user/update";
+NSString* const getUSerURLwithoutID =@"http://bookselves.herokuapp.com/user/";
+
 
 @end

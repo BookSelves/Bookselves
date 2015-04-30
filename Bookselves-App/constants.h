@@ -11,5 +11,9 @@
 @interface constants : NSObject
 
 extern NSString* const serverURL;
+extern NSString* const createUserURL;
+extern NSString* const verifyUserURL;
+extern NSString* const updateUserURL;
+extern NSString* const getUserURLwithoutID;
 
 @end
