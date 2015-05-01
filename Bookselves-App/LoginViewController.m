@@ -47,6 +47,10 @@
     // Dispose of any resources that can be recreated.
 }
 
+
+/**
+ dismiss current view controller and go to profile view
+ */
 - (void) pushToProfileView
 {
     if ([FBSDKAccessToken currentAccessToken]) {
@@ -57,6 +61,7 @@
 }
 
 #pragma mark - user log in
+
 
 - (IBAction)goToSignInViewButtonHandler:(id)sender {
     [UIView animateWithDuration:0.3
@@ -72,6 +77,11 @@
                      }];
 }
 
+/**
+ called when user click the Sign In button.
+ @param sender
+        Sign In button
+ */
 - (IBAction)signInButtonHandler:(id)sender {
     if ([self.inputEmail_signIn.text isEqualToString:@""] || [self.inputPassword_signIn.text isEqualToString:@""]) {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Email or Password can't be empty"
@@ -119,7 +129,11 @@
 }
 
 #pragma mark - user registration
-
+/**
+ handler for the "Sign Up" button, it hides the current sign in view and displays the sign up view
+ @param sender
+        "Sign Up" button
+ */
 - (IBAction)signUpButtonHandler:(id)sender {
     [UIView animateWithDuration:0.3
                      animations:^{
@@ -137,6 +151,11 @@
     self.registerButton.hidden = NO;
 }
 
+/**
+ Handler for register button
+ @param sender
+        the "Submit" button
+ */
 - (IBAction)registerButtonHandler:(id)sender {
     if ([self.inputEmail.text isEqualToString:@""] || [self.inputPassword.text isEqualToString:@""]) {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Email or Password can't be empty"
@@ -174,7 +193,7 @@
                                      }];
         }else {
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error"
-                                                            message:registerUserServerReplyDictionary[@"erro"]
+                                                            message:registerUserServerReplyDictionary[@"error"]
                                                            delegate:nil
                                                   cancelButtonTitle:@"OK"
                                                   otherButtonTitles:nil];
@@ -185,12 +204,32 @@
 
 #pragma mark - formatize URL
 
-//will be used for verification
+/**
+ Append information in dictonary to URL, used for user verification
+ @param dictionary
+        A NSDictionary that contains needed info to append to URL
+ @param url
+        The original URL
+ @code
+ signInInputData --> [@"username":@"user_name", @"password":@"user_password"]
+ [self appendEncodedDictionary:signInInputData ToURL:@"http://example.com/user/verify?"] --> @"http://example.com/user/verify?username=user_name&password=user_password"
+ @endcode
+ */
 - (NSString*) appendEncodedDictionary:(NSDictionary*)dictionary ToURL:(NSString*)url
 {
     return [url stringByAppendingString:[NSString stringWithFormat:@"%@", [self turnDictionaryIntoParamsOfURL:dictionary]]];
 }
 
+/**
+ Turn information in dictionary to parameters of URL
+ @param dictionary
+        The NSDictionary containing query information
+ @code
+ dictionary --> [@"username":@"user_name", @"password":@"user_password"]
+ NSString* output = [self turnDictionaryIntoParamsOfURL:dictionary]
+ output --> @"username=user_name&password=user_password"
+ @endcode
+ */
 - (NSString *) turnDictionaryIntoParamsOfURL:(NSDictionary*)dictionary
 {
     
@@ -206,6 +245,11 @@
     return encodedDictionary;
 }
 
+/**
+ encode dictionary into NSData
+ @param dictionary
+        NSDictionary
+ */
 - (NSData*)encodeDictionary:(NSDictionary*)dictionary
 {
     NSString *encodedDictionary = [self turnDictionaryIntoParamsOfURL:dictionary];
@@ -213,6 +257,15 @@
     return [encodedDictionary dataUsingEncoding:NSUTF8StringEncoding];
 }
 
+/**
+ send HTTP request
+ @param url
+        endpoint of server
+ @param data
+        data in the body of HTTP request
+ @param method
+        "GET", "POST", "PATCH", "DELETE"
+ */
 - (NSString *)sendRequestToURL:(NSString *)url withData:(NSDictionary *)data withMethod: (NSString *)method
 {
     NSMutableURLRequest *urlRequest = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:url]];

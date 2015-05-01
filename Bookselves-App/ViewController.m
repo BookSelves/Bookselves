@@ -47,7 +47,7 @@
         //hide normal log out button
         self.normalUserLogoutButton.hidden = YES;
         
-        //should always be no since the user must have logged in and created a user in the server
+        //should always pass NO since the user must have logged in and created a user in the server
         [self fetchUserInfoFromFBandUpdateUIandShouldCreateUserInServer:NO];
     }else {
         //hider fb log out button
@@ -84,6 +84,11 @@
 
 #pragma mark - user log out
 
+/**
+ Log out button for user logged in with email
+ @param sender
+        the log out button view
+*/
 - (IBAction)normalUserLogoutButtonHandler:(id)sender {
     if ([[NSUserDefaults standardUserDefaults] objectForKey:@"username"] && [[NSUserDefaults standardUserDefaults] objectForKey:@"password"]) {
         [[NSUserDefaults standardUserDefaults] setObject:nil forKey:@"username"];
@@ -96,6 +101,9 @@
 
 #pragma mark - notification handler
 
+/**
+ The handler for FBSDKAccessTokenChangeNotification
+ */
 - (void) observedAccessTokenChangeHandler
 {
     if (![FBSDKAccessToken currentAccessToken]) {
@@ -109,10 +117,13 @@
         self.normalUserLogoutButton.hidden = YES;
         
         //need a method to verify fb user's existence and then determine the bool value here
-        [self fetchUserInfoFromFBandUpdateUIandShouldCreateUserInServer:NO];
+        [self fetchUserInfoFromFBandUpdateUIandShouldCreateUserInServer:YES];
     }
 }
 
+/**
+ The handler for FBSDKProfileChangeNotification
+ */
 - (void) observedProfileChangeHandler
 {
     if ([FBSDKProfile currentProfile]) {
@@ -121,6 +132,11 @@
     
 }
 
+/**
+ The handler for @"EmailUserIdChangeNotification". Send HTTP request to server, and "GET" user information from server
+ @param emailUserIdChangeNotification
+        contains the user_id sent from LoginViewController
+ */
 - (void)observedEmailUserIdChangeHandler:(NSNotification*)emailUserIdChangeNotificiation
 {
     NSDictionary *emailUserId = [emailUserIdChangeNotificiation userInfo];
@@ -149,12 +165,20 @@
 
 #pragma mark - update UI
 
+/**
+ When user logged in with facebook, display user's name based on his/her facebook profile name
+ */
 - (void) displayUserProfile
 {
     NSString *name = [NSString stringWithFormat:@"Name: %@", [FBSDKProfile currentProfile].name];
     self.userNameLabel.text = name;
 }
 
+/**
+ Update user's profile info on UI, if the user has a facebook token then update it's email to the email of his facebook. If the user logged in with email, then display email as user's user name
+ @param userInfo
+        A NSDictionary contains user's email address(either from facebook, or registered email)
+ */
 - (void) updateUIwithUserInfo:(NSDictionary*)userInfo
 {
     if ([FBSDKAccessToken currentAccessToken]) {
@@ -168,6 +192,12 @@
 
 #pragma mark - fetch user info from FB / create User in server
 
+/**
+ Async fetch user's information (id, email, gender, location, etc) from Facebook by calling Facebook's Graph API, update UI, and create user in server based on input.
+ @param should
+        if YES, the create user in server
+        if NO, user with this facebook id has already existed in server
+ */
 - (void) fetchUserInfoFromFBandUpdateUIandShouldCreateUserInServer:(BOOL)should
 {
     if ([FBSDKAccessToken currentAccessToken]) {
@@ -186,6 +216,14 @@
 }
 
 
+
+
+/**
+ create user in server with his facebook id
+ @param facebookID
+        user's facebook ID
+ */
+
 //something went wrong here when trying to create a user w/ facebook_id and auth_token in the server.
 - (void) createUserInServerWithFacebookID:(NSString*) facebookID
 {
@@ -203,7 +241,7 @@
 }
 
 
-//duplicated code from LoginViewController
+//duplicated code from LoginViewController (description can also be found there)
 #pragma mark - formatize URL
 
 //will be used for verification
@@ -245,6 +283,7 @@
     NSData* result = [NSURLConnection sendSynchronousRequest:urlRequest  returningResponse:&response error:&error];
     if([response statusCode] >= 400 || [response statusCode] == 0)
     {
+//        NSLog(@"status code: %@", [response statusCode]);
         NSLog(@"error: %@", [error description]);
         return nil;
     }
