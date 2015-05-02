@@ -9,11 +9,10 @@ Progress
 
 Todo
 ---
-1. fix facebook server user issue 
-2. udpate user's geo location everytime user log in
-3. feature (ability) to update profile picture for email user, send image to S3 and update the returned URL to server.
+1. udpate user's geo location everytime user log in
+2. feature (ability) to update profile picture for email user, send image to S3 and update the returned URL to server.
 
 Issue
 ---
-1. cannot create facebook user on server, [NSError description] returns null.
+1. cannot create facebook user on server, [NSError description] returns null. --**Fixed**
 
