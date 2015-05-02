@@ -62,7 +62,11 @@
 
 #pragma mark - user log in
 
-
+/**
+ Called when user clicked "Sign In" button, and then the user will go to the sign in view
+ @param sender
+        "Sign In" button
+ **/
 - (IBAction)goToSignInViewButtonHandler:(id)sender {
     [UIView animateWithDuration:0.3
                      animations:^{
@@ -102,7 +106,7 @@
                                                       withMethod:@"GET"];
         NSLog(verifyUserServerReply);
         
-        NSDictionary *verifyUserServerReplyDictionary = (NSDictionary *)[NSJSONSerialization JSONObjectWithData:[verifyUserServerReply dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
+        NSDictionary *verifyUserServerReplyDictionary = [self serverJsonReplyParser:verifyUserServerReply];
         
         //if user exists go back to the profile view controller.
         if (verifyUserServerReplyDictionary[@"success"] != nil) {
@@ -176,7 +180,7 @@
                                                 withMethod:@"POST"];
         NSLog(registerUserServerReply);
         
-        NSDictionary *registerUserServerReplyDictionary = (NSDictionary *)[NSJSONSerialization JSONObjectWithData:[registerUserServerReply dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
+        NSDictionary *registerUserServerReplyDictionary = [self serverJsonReplyParser:registerUserServerReply];
         
         //if registered successfully, log user in and dismiss current view controller
         if (registerUserServerReplyDictionary[@"success"] != nil) {
@@ -281,6 +285,17 @@
         return nil;
     }
     return [[NSString alloc] initWithData:result encoding:NSUTF8StringEncoding];
+}
+
+/**
+ parse server reply from JSON format to NSDictionary
+ @param serverReply
+ the reply in JSON format sent back from server
+ @return key-value pair of JSON data in NSDictionary
+ */
+- (NSDictionary*)serverJsonReplyParser:(NSString*)serverReply
+{
+    return (NSDictionary *)[NSJSONSerialization JSONObjectWithData:[serverReply dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
 }
 
 

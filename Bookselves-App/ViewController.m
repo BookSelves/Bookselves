@@ -10,9 +10,11 @@
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <FBSDKLoginKit/FBSDKLoginKit.h>
 #import "constants.h"
+#import "CoreLocation/CoreLocation.h"
 
 
 @interface ViewController ()
+
 @property (weak, nonatomic) IBOutlet UILabel *userNameLabel;
 @property (weak, nonatomic) IBOutlet FBSDKLoginButton *facebookLoginButton;
 @property (weak, nonatomic) IBOutlet UIButton *normalUserLogoutButton;
@@ -42,13 +44,14 @@
                                                object:nil];
     
     if ([FBSDKAccessToken currentAccessToken]) {
+        
         [self.userNameLabel setText:[NSString stringWithFormat:@"Name: %@", [FBSDKProfile currentProfile].name]];
         
         //hide normal log out button
         self.normalUserLogoutButton.hidden = YES;
         
         //should always pass NO since the user must have logged in and created a user in the server
-        [self fetchUserInfoFromFBandUpdateUIandShouldCreateUserInServer:NO];
+        [self fetchUserInfoFromFBandUpdateUIandShouldCreateUserInServer];
     }else {
         //hider fb log out button
         NSLog(@"imhere");
@@ -117,7 +120,7 @@
         self.normalUserLogoutButton.hidden = YES;
         
         //need a method to verify fb user's existence and then determine the bool value here
-        [self fetchUserInfoFromFBandUpdateUIandShouldCreateUserInServer:YES];
+        [self fetchUserInfoFromFBandUpdateUIandShouldCreateUserInServer];
     }
 }
 
@@ -193,12 +196,40 @@
 #pragma mark - fetch user info from FB / create User in server
 
 /**
+ Verify if Facebook user has been created in server based on their facebook_id and auth_token
+ @param facebookID
+ User's facebook_id
+ @return BOOL
+ YES->user existed on server NO->user doesn't exist on server
+ */
+- (BOOL) isFacebookUserExistsOnServer:(NSString*)facebookID
+{
+    if ([FBSDKAccessToken currentAccessToken]) {
+        NSDictionary* fbUserInfo = [[NSDictionary alloc] initWithObjectsAndKeys:facebookID,@"facebook_id",[[FBSDKAccessToken currentAccessToken] tokenString], @"auth_token", nil];
+        NSString *verifyFacebookUserServerReply = [self sendRequestToURL:[self appendEncodedDictionary:fbUserInfo ToURL:[NSString stringWithFormat:@"%@/user/verify?", serverURL]]
+                                                                withData:nil
+                                                              withMethod:@"GET"];
+        NSLog(@"facebook user existed on server?: %@", verifyFacebookUserServerReply);
+        
+        NSDictionary *verifyFacebookUserServerReplyDictionary = [self serverJsonReplyParser:verifyFacebookUserServerReply];
+        
+        if (verifyFacebookUserServerReplyDictionary[@"success"] != nil) {
+            return NO;
+        }else {
+            return YES;
+        }
+    }
+    return NO;
+}
+
+
+/**
  Async fetch user's information (id, email, gender, location, etc) from Facebook by calling Facebook's Graph API, update UI, and create user in server based on input.
  @param should
         if YES, the create user in server
         if NO, user with this facebook id has already existed in server
  */
-- (void) fetchUserInfoFromFBandUpdateUIandShouldCreateUserInServer:(BOOL)should
+- (void) fetchUserInfoFromFBandUpdateUIandShouldCreateUserInServer
 {
     if ([FBSDKAccessToken currentAccessToken]) {
         FBSDKGraphRequest *graphRequest = [[FBSDKGraphRequest alloc] initWithGraphPath:@"me" parameters:nil];
@@ -206,7 +237,11 @@
             if (!error) {
                 NSLog(@"%@",result);
                 NSString *facebookID = [NSString stringWithFormat:@"%@", result[@"id"]];
-                if (should) {
+                BOOL isUserExistedOnServer = [self isFacebookUserExistsOnServer:facebookID];
+                if (isUserExistedOnServer) {
+                    //should be main thread or other thread
+                    NSLog(@"user does not exist on server");
+                    
                     [self performSelectorOnMainThread:@selector(createUserInServerWithFacebookID:) withObject:facebookID waitUntilDone:NO];
                 }
                 [self performSelectorOnMainThread:@selector(updateUIwithUserInfo:) withObject:result waitUntilDone:NO];
@@ -214,7 +249,6 @@
         }];
     }
 }
-
 
 
 
@@ -228,7 +262,7 @@
 - (void) createUserInServerWithFacebookID:(NSString*) facebookID
 {
     if ([FBSDKAccessToken currentAccessToken]) {
-        NSString *facebookAccessToken = [NSString stringWithFormat:@"%@", [FBSDKAccessToken currentAccessToken]];
+        NSString *facebookAccessToken = [[FBSDKAccessToken currentAccessToken] tokenString];
         //NSLog(facebookAccessToken);
         
         NSDictionary *fbLoginData = [[NSDictionary alloc] initWithObjectsAndKeys:facebookID, @"facebook_id", facebookAccessToken, @"auth_token", nil];
@@ -242,7 +276,7 @@
 
 
 //duplicated code from LoginViewController (description can also be found there)
-#pragma mark - formatize URL
+#pragma mark - Server Query & JSON Parsing
 
 //will be used for verification
 - (NSString*) appendEncodedDictionary:(NSDictionary*)dictionary ToURL:(NSString*)url
@@ -288,6 +322,17 @@
         return nil;
     }
     return [[NSString alloc] initWithData:result encoding:NSUTF8StringEncoding];
+}
+
+/**
+ parse server reply from JSON format to NSDictionary
+ @param serverReply
+        the reply in JSON format sent back from server
+ @return key-value pair of JSON data in NSDictionary
+ */
+- (NSDictionary*)serverJsonReplyParser:(NSString*)serverReply
+{
+    return (NSDictionary *)[NSJSONSerialization JSONObjectWithData:[serverReply dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
 }
 
 
