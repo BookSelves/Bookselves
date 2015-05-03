@@ -10,4 +10,7 @@
 
 @interface LoginViewController : UIViewController
 
+@property (strong, nonatomic) NSString* viewType;
+- (void)setViewType:(NSString*)viewType;
+
 @end

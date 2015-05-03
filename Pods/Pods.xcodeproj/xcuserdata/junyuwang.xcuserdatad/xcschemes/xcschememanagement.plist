@@ -14,6 +14,11 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>Pods-Bookselves-App-INTULocationManager.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>Pods-Bookselves-App.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -22,17 +27,22 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>10A9DB652E26E22E20604559</key>
+		<key>1DD297FFC0ACCB5BB4B0199E</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>45FACD9E6955BD0099CF0D0B</key>
+		<key>7701D0D240A7FF885BA1DC3E</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>BF88D77FF9FD78797E4625F4</key>
+		<key>A421319183AF71FEC299788B</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>AE1CBE894975849B84119288</key>
 		<dict>
 			<key>primary</key>
 			<true/>

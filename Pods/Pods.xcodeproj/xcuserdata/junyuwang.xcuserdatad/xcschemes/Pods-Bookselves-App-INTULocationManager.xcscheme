@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "A421319183AF71FEC299788B"
-               BuildableName = "libPods-Bookselves-App-Facebook-iOS-SDK.a"
-               BlueprintName = "Pods-Bookselves-App-Facebook-iOS-SDK"
+               BlueprintIdentifier = "AE1CBE894975849B84119288"
+               BuildableName = "libPods-Bookselves-App-INTULocationManager.a"
+               BlueprintName = "Pods-Bookselves-App-INTULocationManager"
                ReferencedContainer = "container:Pods.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>

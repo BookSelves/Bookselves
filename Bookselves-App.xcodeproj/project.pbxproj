@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		A81B57BEDCD72D9DC7A12C67 /* libPods-Bookselves-App.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F9D3B2879738D611FEA5ECDC /* libPods-Bookselves-App.a */; };
+		B021164D1AF5D11C009EAB72 /* SignUpAndLogInViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B021164C1AF5D11C009EAB72 /* SignUpAndLogInViewController.m */; };
 		B0F3471A1AF07BA600955D4A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B0F347191AF07BA600955D4A /* main.m */; };
 		B0F3471D1AF07BA600955D4A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B0F3471C1AF07BA600955D4A /* AppDelegate.m */; };
 		B0F347201AF07BA600955D4A /* Bookselves_App.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B0F3471E1AF07BA600955D4A /* Bookselves_App.xcdatamodeld */; };
@@ -33,6 +34,8 @@
 /* Begin PBXFileReference section */
 		8CD1E205950FD88D3149EC59 /* Pods-Bookselves-App.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bookselves-App.release.xcconfig"; path = "Pods/Target Support Files/Pods-Bookselves-App/Pods-Bookselves-App.release.xcconfig"; sourceTree = "<group>"; };
 		98DFDC0301AD68E7CC2A302D /* Pods-Bookselves-App.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bookselves-App.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Bookselves-App/Pods-Bookselves-App.debug.xcconfig"; sourceTree = "<group>"; };
+		B021164B1AF5D11C009EAB72 /* SignUpAndLogInViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SignUpAndLogInViewController.h; sourceTree = "<group>"; };
+		B021164C1AF5D11C009EAB72 /* SignUpAndLogInViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SignUpAndLogInViewController.m; sourceTree = "<group>"; };
 		B0F347141AF07BA600955D4A /* Bookselves-App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Bookselves-App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B0F347181AF07BA600955D4A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B0F347191AF07BA600955D4A /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -110,6 +113,8 @@
 				B0F347411AF082F200955D4A /* LoginViewController.m */,
 				B0F347211AF07BA600955D4A /* ViewController.h */,
 				B0F347221AF07BA600955D4A /* ViewController.m */,
+				B021164B1AF5D11C009EAB72 /* SignUpAndLogInViewController.h */,
+				B021164C1AF5D11C009EAB72 /* SignUpAndLogInViewController.m */,
 				B0F347241AF07BA600955D4A /* Main.storyboard */,
 				B0F347431AF09ED100955D4A /* constants.h */,
 				B0F347441AF09ED100955D4A /* constants.m */,
@@ -297,6 +302,7 @@
 				B0F347231AF07BA600955D4A /* ViewController.m in Sources */,
 				B0F347451AF09ED100955D4A /* constants.m in Sources */,
 				B0F3471A1AF07BA600955D4A /* main.m in Sources */,
+				B021164D1AF5D11C009EAB72 /* SignUpAndLogInViewController.m in Sources */,
 				B0F347421AF082F200955D4A /* LoginViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

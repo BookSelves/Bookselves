@@ -11,7 +11,7 @@
 #import <FBSDKLoginKit/FBSDKLoginKit.h>
 #import "constants.h"
 #import "CoreLocation/CoreLocation.h"
-
+#import <INTULocationManager/INTULocationManager.h>
 
 @interface ViewController ()
 
@@ -44,23 +44,20 @@
                                                object:nil];
     
     if ([FBSDKAccessToken currentAccessToken]) {
-        
         [self.userNameLabel setText:[NSString stringWithFormat:@"Name: %@", [FBSDKProfile currentProfile].name]];
-        
-        //hide normal log out button
         self.normalUserLogoutButton.hidden = YES;
         
-        //should always pass NO since the user must have logged in and created a user in the server
-        [self fetchUserInfoFromFBandUpdateUIandShouldCreateUserInServer];
+        //fetch user info and location
+        [self fetchAndVerifyUserInfoFromFBandAndUpdateUserLocationAndUpdateUI];
+        
     }else {
-        //hider fb log out button
-        NSLog(@"imhere");
-        
         self.facebookLoginButton.hidden = YES;
-        
         if ([[NSUserDefaults standardUserDefaults] objectForKey:@"username"] && [[NSUserDefaults standardUserDefaults] objectForKey:@"password"]) {
             [self.userEmailLabel setText:[[NSUserDefaults standardUserDefaults] objectForKey:@"username"]];
             [self.userNameLabel setText:@"Email User"];
+            
+            //get user's location
+            [self getUserLocationAndUpdateToServerWithFacebookID:nil];
         }
     }
 }
@@ -82,6 +79,64 @@
         if ([self.userEmailLabel.text isEqualToString:@"Email:"]) {
            [self performSegueWithIdentifier:@"pop up login view" sender:self];
         }
+    }
+}
+
+#pragma mark - location service
+
+- (void)getUserLocationAndUpdateToServerWithFacebookID:(NSString*)facebook_id
+{
+    
+    INTULocationManager *locMgr = [INTULocationManager sharedInstance];
+    [locMgr requestLocationWithDesiredAccuracy:INTULocationAccuracyHouse
+                                       timeout:10.0
+                          delayUntilAuthorized:YES  // This parameter is optional, defaults to NO if omitted
+                                         block:^(CLLocation *currentLocation, INTULocationAccuracy achievedAccuracy, INTULocationStatus status) {
+                                             if (status == INTULocationStatusSuccess) {
+                                                 [self updateUserLatitude:[NSString stringWithFormat:@"%f", currentLocation.coordinate.latitude]
+                                                                Longitude:[NSString stringWithFormat:@"%f", currentLocation.coordinate.longitude]
+                                                           withFacebookID:facebook_id];
+                                             }
+                                             else if (status == INTULocationStatusTimedOut) {
+                                                 // Wasn't able to locate the user with the requested accuracy within the timeout interval.
+                                                 // However, currentLocation contains the best location available (if any) as of right now,
+                                                 // and achievedAccuracy has info on the accuracy/recency of the location in currentLocation.
+                                                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error"
+                                                                                                 message:@"Time out: could not find your location"
+                                                                                                delegate:nil
+                                                                                       cancelButtonTitle:@"OK"
+                                                                                       otherButtonTitles:nil];
+                                                 [alert show];
+                                                 
+                                                 [self updateUserLatitude:[NSString stringWithFormat:@"%f", currentLocation.coordinate.latitude]
+                                                                Longitude:[NSString stringWithFormat:@"%f", currentLocation.coordinate.longitude]
+                                                           withFacebookID:facebook_id];
+                                             }
+                                             else {
+                                                 // An error occurred, more info is available by looking at the specific status returned.
+                                                 NSLog(@"strange error while getting location, check status");
+                                             }
+                                         }];
+}
+
+- (void)updateUserLatitude:(NSString*)latitude Longitude:(NSString*)longitude withFacebookID:(NSString*)facebook_id
+{
+    NSString *updatePath = [NSString stringWithFormat:@"%@/user/update", serverURL];
+    
+    //if facebook user
+    if ([FBSDKAccessToken currentAccessToken]) {
+        NSDictionary *locationInfo = [[NSDictionary alloc] initWithObjectsAndKeys:facebook_id, @"facebook_id", [[FBSDKAccessToken currentAccessToken] tokenString], @"auth_token", longitude, @"lng", latitude, @"lat", nil];
+        NSString *serverReply = [self sendRequestToURL:updatePath
+                      withData:locationInfo
+                    withMethod:@"PUT"];
+        NSLog(@"facebook user update location reply: %@",serverReply);
+    }else {
+        //if email user
+        NSDictionary *locationInfo = [[NSDictionary alloc] initWithObjectsAndKeys:[[NSUserDefaults standardUserDefaults] objectForKey:@"username"], @"username", [[NSUserDefaults standardUserDefaults] objectForKey:@"password"], @"password", longitude, @"lng", latitude, @"lat", nil];
+        NSString *serverReply = [self sendRequestToURL:updatePath
+                      withData:locationInfo
+                    withMethod:@"PUT"];
+        NSLog(@"Email user update location reply: %@", serverReply);
     }
 }
 
@@ -119,8 +174,8 @@
         self.facebookLoginButton.hidden = NO;
         self.normalUserLogoutButton.hidden = YES;
         
-        //need a method to verify fb user's existence and then determine the bool value here
-        [self fetchUserInfoFromFBandUpdateUIandShouldCreateUserInServer];
+        NSLog(@"bra");
+        [self fetchAndVerifyUserInfoFromFBandAndUpdateUserLocationAndUpdateUI];
     }
 }
 
@@ -218,7 +273,7 @@
         if YES, the create user in server
         if NO, user with this facebook id has already existed in server
  */
-- (void) fetchUserInfoFromFBandUpdateUIandShouldCreateUserInServer
+- (void) fetchAndVerifyUserInfoFromFBandAndUpdateUserLocationAndUpdateUI
 {
     if ([FBSDKAccessToken currentAccessToken]) {
         FBSDKGraphRequest *graphRequest = [[FBSDKGraphRequest alloc] initWithGraphPath:@"me" parameters:nil];
@@ -226,14 +281,17 @@
             if (!error) {
                 NSLog(@"%@",result);
                 NSString *facebookID = [NSString stringWithFormat:@"%@", result[@"id"]];
+                
                 [self isFacebookUserExistsOnServer:facebookID];
+                
+                //update location
+                [self getUserLocationAndUpdateToServerWithFacebookID:facebookID];
+                
                 [self performSelectorOnMainThread:@selector(updateUIwithUserInfo:) withObject:result waitUntilDone:NO];
             }
         }];
     }
 }
-
-
 
 
 //duplicated code from LoginViewController (description can also be found there)

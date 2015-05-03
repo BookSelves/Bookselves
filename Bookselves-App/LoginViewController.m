@@ -23,6 +23,8 @@
 @property (weak, nonatomic) IBOutlet UITextField *inputEmail_signIn;
 @property (weak, nonatomic) IBOutlet UITextField *inputPassword_signIn;
 
+@property (weak, nonatomic) IBOutlet UIButton *backButton;
+
 @end
 
 @implementation LoginViewController
@@ -32,14 +34,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(pushToProfileView)
-                                                 name: FBSDKAccessTokenDidChangeNotification
-                                               object:nil];
+    [self displayCorrectView];
     
-    self.inputEmail.hidden = YES;
-    self.inputPassword.hidden = YES;
-    self.registerButton.hidden = YES;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -48,16 +44,33 @@
 }
 
 
-/**
- dismiss current view controller and go to profile view
- */
-- (void) pushToProfileView
+- (IBAction)backButtonTouchedHandler:(id)sender {
+    [self dismissViewControllerAnimated:YES
+                             completion:^{
+                                 NSLog(@"Back to sign up view controller");
+                             }];
+}
+
+- (void)displayCorrectView
 {
-    if ([FBSDKAccessToken currentAccessToken]) {
-        [self dismissViewControllerAnimated:YES completion:^{
-            NSLog(@"user log in");
-        }];
+    if ([self.viewType isEqualToString:@"sign up"]) {
+        NSLog(@"what");
+        [self hideLogInView];
+    }else if ([self.viewType isEqualToString:@"sign in"]) {
+        [self hideSignUpView];
     }
+}
+
+- (void)hideLogInView
+{
+    self.loginView.hidden = YES;
+}
+
+- (void)hideSignUpView
+{
+    self.inputEmail.hidden = YES;
+    self.inputPassword.hidden = YES;
+    self.registerButton.hidden = YES;
 }
 
 #pragma mark - user log in
@@ -117,10 +130,8 @@
             
             [[NSNotificationCenter defaultCenter] postNotificationName:@"EmailUserIdChangeNotification" object:nil userInfo:verifyUserServerReplyDictionary];
             
-            [self dismissViewControllerAnimated:YES
-                                     completion:^{
-                                         NSLog(@"User log in via Email");
-                                     }];
+            [self performSegueWithIdentifier:@"push to profile view" sender:self];
+            
         }else {
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error"
                                                             message:verifyUserServerReplyDictionary[@"error"]
@@ -191,10 +202,7 @@
             
             [[NSNotificationCenter defaultCenter] postNotificationName:@"EmailUserIdChangeNotification" object:nil userInfo:registerUserServerReplyDictionary];
             
-            [self dismissViewControllerAnimated:YES
-                                     completion:^{
-                                         NSLog(@"user finished registration and logs in");
-                                     }];
+            [self performSegueWithIdentifier:@"push to profile view" sender:self];
         }else {
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error"
                                                             message:registerUserServerReplyDictionary[@"error"]

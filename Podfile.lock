@@ -21,12 +21,15 @@ PODS:
   - Facebook-iOS-SDK/ShareKit (4.0.1):
     - Bolts (~> 1.0)
     - Facebook-iOS-SDK/CoreKit
+  - INTULocationManager (3.0.1)
 
 DEPENDENCIES:
   - Facebook-iOS-SDK (~> 4.0)
+  - INTULocationManager (~> 3.0)
 
 SPEC CHECKSUMS:
   Bolts: aac24961496d504aa56fc267cde95162a71bac39
   Facebook-iOS-SDK: 6d05532c97e9c542f8d87f94b7f6ee217493d00b
+  INTULocationManager: c27483113e1bbc5952ead6417f9b39824a240ebb
 
 COCOAPODS: 0.36.3
