@@ -196,13 +196,11 @@
 #pragma mark - fetch user info from FB / create User in server
 
 /**
- Verify if Facebook user has been created in server based on their facebook_id and auth_token
+ Verify if Facebook user has been created in server based on their facebook_id  and auth_token, and if user existed on the server, it does nothing, otherwise create a new user on the server based on facebook_id and auth_token
  @param facebookID
- User's facebook_id
- @return BOOL
- YES->user existed on server NO->user doesn't exist on server
+        User's facebook_id
  */
-- (BOOL) isFacebookUserExistsOnServer:(NSString*)facebookID
+- (void) isFacebookUserExistsOnServer:(NSString*)facebookID
 {
     if ([FBSDKAccessToken currentAccessToken]) {
         NSDictionary* fbUserInfo = [[NSDictionary alloc] initWithObjectsAndKeys:facebookID,@"facebook_id",[[FBSDKAccessToken currentAccessToken] tokenString], @"auth_token", nil];
@@ -210,16 +208,7 @@
                                                                 withData:nil
                                                               withMethod:@"GET"];
         NSLog(@"facebook user existed on server?: %@", verifyFacebookUserServerReply);
-        
-        NSDictionary *verifyFacebookUserServerReplyDictionary = [self serverJsonReplyParser:verifyFacebookUserServerReply];
-        
-        if (verifyFacebookUserServerReplyDictionary[@"success"] != nil) {
-            return NO;
-        }else {
-            return YES;
-        }
     }
-    return NO;
 }
 
 
@@ -237,13 +226,7 @@
             if (!error) {
                 NSLog(@"%@",result);
                 NSString *facebookID = [NSString stringWithFormat:@"%@", result[@"id"]];
-                BOOL isUserExistedOnServer = [self isFacebookUserExistsOnServer:facebookID];
-                if (isUserExistedOnServer) {
-                    //should be main thread or other thread
-                    NSLog(@"user does not exist on server");
-                    
-                    [self performSelectorOnMainThread:@selector(createUserInServerWithFacebookID:) withObject:facebookID waitUntilDone:NO];
-                }
+                [self isFacebookUserExistsOnServer:facebookID];
                 [self performSelectorOnMainThread:@selector(updateUIwithUserInfo:) withObject:result waitUntilDone:NO];
             }
         }];
@@ -251,28 +234,6 @@
 }
 
 
-
-/**
- create user in server with his facebook id
- @param facebookID
-        user's facebook ID
- */
-
-//something went wrong here when trying to create a user w/ facebook_id and auth_token in the server.
-- (void) createUserInServerWithFacebookID:(NSString*) facebookID
-{
-    if ([FBSDKAccessToken currentAccessToken]) {
-        NSString *facebookAccessToken = [[FBSDKAccessToken currentAccessToken] tokenString];
-        //NSLog(facebookAccessToken);
-        
-        NSDictionary *fbLoginData = [[NSDictionary alloc] initWithObjectsAndKeys:facebookID, @"facebook_id", facebookAccessToken, @"auth_token", nil];
-        NSString *fbLoginServerReply = [self sendRequestToURL:[NSString stringWithFormat:@"%@/user/create", serverURL]
-                      withData:fbLoginData
-                    withMethod:@"POST"];
-        
-        NSLog(@"server reply: %@",fbLoginServerReply);
-    }
-}
 
 
 //duplicated code from LoginViewController (description can also be found there)
