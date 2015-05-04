@@ -6,6 +6,36 @@
 // project.
 
 
+// AFAmazonS3Manager
+#define COCOAPODS_POD_AVAILABLE_AFAmazonS3Manager
+#define COCOAPODS_VERSION_MAJOR_AFAmazonS3Manager 3
+#define COCOAPODS_VERSION_MINOR_AFAmazonS3Manager 2
+#define COCOAPODS_VERSION_PATCH_AFAmazonS3Manager 1
+
+// AFNetworking/NSURLConnection
+#define COCOAPODS_POD_AVAILABLE_AFNetworking_NSURLConnection
+#define COCOAPODS_VERSION_MAJOR_AFNetworking_NSURLConnection 2
+#define COCOAPODS_VERSION_MINOR_AFNetworking_NSURLConnection 5
+#define COCOAPODS_VERSION_PATCH_AFNetworking_NSURLConnection 3
+
+// AFNetworking/Reachability
+#define COCOAPODS_POD_AVAILABLE_AFNetworking_Reachability
+#define COCOAPODS_VERSION_MAJOR_AFNetworking_Reachability 2
+#define COCOAPODS_VERSION_MINOR_AFNetworking_Reachability 5
+#define COCOAPODS_VERSION_PATCH_AFNetworking_Reachability 3
+
+// AFNetworking/Security
+#define COCOAPODS_POD_AVAILABLE_AFNetworking_Security
+#define COCOAPODS_VERSION_MAJOR_AFNetworking_Security 2
+#define COCOAPODS_VERSION_MINOR_AFNetworking_Security 5
+#define COCOAPODS_VERSION_PATCH_AFNetworking_Security 3
+
+// AFNetworking/Serialization
+#define COCOAPODS_POD_AVAILABLE_AFNetworking_Serialization
+#define COCOAPODS_VERSION_MAJOR_AFNetworking_Serialization 2
+#define COCOAPODS_VERSION_MINOR_AFNetworking_Serialization 5
+#define COCOAPODS_VERSION_PATCH_AFNetworking_Serialization 3
+
 // Bolts
 #define COCOAPODS_POD_AVAILABLE_Bolts
 #define COCOAPODS_VERSION_MAJOR_Bolts 1
@@ -59,4 +89,22 @@
 #define COCOAPODS_VERSION_MAJOR_INTULocationManager 3
 #define COCOAPODS_VERSION_MINOR_INTULocationManager 0
 #define COCOAPODS_VERSION_PATCH_INTULocationManager 1
+
+// QBImagePickerController
+#define COCOAPODS_POD_AVAILABLE_QBImagePickerController
+#define COCOAPODS_VERSION_MAJOR_QBImagePickerController 3
+#define COCOAPODS_VERSION_MINOR_QBImagePickerController 2
+#define COCOAPODS_VERSION_PATCH_QBImagePickerController 0
+
+// SDWebImage
+#define COCOAPODS_POD_AVAILABLE_SDWebImage
+#define COCOAPODS_VERSION_MAJOR_SDWebImage 3
+#define COCOAPODS_VERSION_MINOR_SDWebImage 7
+#define COCOAPODS_VERSION_PATCH_SDWebImage 2
+
+// SDWebImage/Core
+#define COCOAPODS_POD_AVAILABLE_SDWebImage_Core
+#define COCOAPODS_VERSION_MAJOR_SDWebImage_Core 3
+#define COCOAPODS_VERSION_MINOR_SDWebImage_Core 7
+#define COCOAPODS_VERSION_PATCH_SDWebImage_Core 2
 

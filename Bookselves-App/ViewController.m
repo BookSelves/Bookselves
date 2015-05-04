@@ -12,13 +12,17 @@
 #import "constants.h"
 #import "CoreLocation/CoreLocation.h"
 #import <INTULocationManager/INTULocationManager.h>
+#import <QBImagePickerController/QBImagePickerController.h>
 
 @interface ViewController ()
 
 @property (weak, nonatomic) IBOutlet UILabel *userNameLabel;
-@property (weak, nonatomic) IBOutlet FBSDKLoginButton *facebookLoginButton;
 @property (weak, nonatomic) IBOutlet UIButton *normalUserLogoutButton;
 @property (weak, nonatomic) IBOutlet UILabel *userEmailLabel;
+
+@property (weak, nonatomic) IBOutlet UIView *emailUserProfilePictureView;
+@property (weak, nonatomic) IBOutlet UIImageView *emailUserProfilePicture;
+
 
 @end
 
@@ -28,6 +32,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
     // Do any additional setup after loading the view, typically from a nib.
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(observedAccessTokenChangeHandler)
@@ -45,13 +50,13 @@
     
     if ([FBSDKAccessToken currentAccessToken]) {
         [self.userNameLabel setText:[NSString stringWithFormat:@"Name: %@", [FBSDKProfile currentProfile].name]];
-        self.normalUserLogoutButton.hidden = YES;
+        
+        self.emailUserProfilePictureView.hidden = YES;
         
         //fetch user info and location
         [self fetchAndVerifyUserInfoFromFBandAndUpdateUserLocationAndUpdateUI];
         
     }else {
-        self.facebookLoginButton.hidden = YES;
         if ([[NSUserDefaults standardUserDefaults] objectForKey:@"username"] && [[NSUserDefaults standardUserDefaults] objectForKey:@"password"]) {
             [self.userEmailLabel setText:[[NSUserDefaults standardUserDefaults] objectForKey:@"username"]];
             [self.userNameLabel setText:@"Email User"];
@@ -82,6 +87,68 @@
     }
 }
 
+#pragma mark - image pick/upload/display
+
+- (IBAction)changeProfilePictureButtonTouchedHandler:(id)sender {
+    QBImagePickerController *imagePickerController = [QBImagePickerController new];
+    imagePickerController.delegate = self;
+    imagePickerController.allowsMultipleSelection = YES;
+    imagePickerController.maximumNumberOfSelection = 1;
+    imagePickerController.mediaType = QBImagePickerMediaTypeImage;
+    imagePickerController.prompt = @"Select your profile picture";
+    imagePickerController.showsNumberOfSelectedAssets = YES;
+    
+    [self presentViewController:imagePickerController
+                       animated:YES
+                     completion:^{
+                         NSLog(@"showing image picker controller");
+                     }];
+}
+
+- (void)qb_imagePickerController:(QBImagePickerController *)imagePickerController didFinishPickingAssets:(NSArray *)assets {
+    for (PHAsset *asset in assets) {
+        // Do something with the asset
+        //
+        // get image metadata from phasset and set the UIImageView to be that photo.
+        // and uploading the photo to S3 server, and update the returned URL to our own server.
+        [[PHImageManager defaultManager] requestImageForAsset:asset
+                                                   targetSize:PHImageManagerMaximumSize
+                                                  contentMode:PHImageContentModeDefault
+                                                      options:nil
+                                                resultHandler:^(UIImage *result, NSDictionary *info) {
+                                                    self.emailUserProfilePicture.image = result;
+                                                    NSLog(@"finished setting up new profile picture");
+                                                }];
+    }
+    [self dismissViewControllerAnimated:YES completion:NULL];
+}
+
+//  delegate methods for QBImagePickerController. Gets called when certain action occured.
+
+- (void)qb_imagePickerControllerDidCancel:(QBImagePickerController *)imagePickerController
+{
+    [self dismissViewControllerAnimated:YES completion:NULL];
+}
+
+- (BOOL)qb_imagePickerController:(QBImagePickerController *)imagePickerController shouldSelectAsset:(PHAsset *)asset
+{
+    NSLog(@"should select: %@", [asset description]);
+    return YES;
+}
+
+- (void)qb_imagePickerController:(QBImagePickerController *)imagePickerController didSelectAsset:(PHAsset *)asset
+{
+    NSLog([asset description]);
+}
+
+- (void)qb_imagePickerController:(QBImagePickerController *)imagePickerController didDeselectAsset:(PHAsset *)asset
+{
+    NSLog(@"deselect %@", [asset description]);
+}
+
+
+
+
 #pragma mark - location service
 
 - (void)getUserLocationAndUpdateToServerWithFacebookID:(NSString*)facebook_id
@@ -96,6 +163,9 @@
                                                  [self updateUserLatitude:[NSString stringWithFormat:@"%f", currentLocation.coordinate.latitude]
                                                                 Longitude:[NSString stringWithFormat:@"%f", currentLocation.coordinate.longitude]
                                                            withFacebookID:facebook_id];
+//                                                 [self updateUserLatitude:currentLocation.coordinate.latitude
+//                                                                Longitude:currentLocation.coordinate.longitude
+//                                                           withFacebookID:facebook_id];
                                              }
                                              else if (status == INTULocationStatusTimedOut) {
                                                  // Wasn't able to locate the user with the requested accuracy within the timeout interval.
@@ -111,6 +181,9 @@
                                                  [self updateUserLatitude:[NSString stringWithFormat:@"%f", currentLocation.coordinate.latitude]
                                                                 Longitude:[NSString stringWithFormat:@"%f", currentLocation.coordinate.longitude]
                                                            withFacebookID:facebook_id];
+//                                                 [self updateUserLatitude:currentLocation.coordinate.latitude
+//                                                                Longitude:currentLocation.coordinate.longitude
+//                                                           withFacebookID:facebook_id];
                                              }
                                              else {
                                                  // An error occurred, more info is available by looking at the specific status returned.
@@ -125,7 +198,11 @@
     
     //if facebook user
     if ([FBSDKAccessToken currentAccessToken]) {
+        NSLog(@"%@", longitude);
+        NSLog(@"%@", latitude);
+        
         NSDictionary *locationInfo = [[NSDictionary alloc] initWithObjectsAndKeys:facebook_id, @"facebook_id", [[FBSDKAccessToken currentAccessToken] tokenString], @"auth_token", longitude, @"lng", latitude, @"lat", nil];
+        NSLog([locationInfo description]);
         NSString *serverReply = [self sendRequestToURL:updatePath
                       withData:locationInfo
                     withMethod:@"PUT"];
@@ -133,6 +210,7 @@
     }else {
         //if email user
         NSDictionary *locationInfo = [[NSDictionary alloc] initWithObjectsAndKeys:[[NSUserDefaults standardUserDefaults] objectForKey:@"username"], @"username", [[NSUserDefaults standardUserDefaults] objectForKey:@"password"], @"password", longitude, @"lng", latitude, @"lat", nil];
+        NSLog([locationInfo description]);
         NSString *serverReply = [self sendRequestToURL:updatePath
                       withData:locationInfo
                     withMethod:@"PUT"];
@@ -148,11 +226,22 @@
         the log out button view
 */
 - (IBAction)normalUserLogoutButtonHandler:(id)sender {
-    if ([[NSUserDefaults standardUserDefaults] objectForKey:@"username"] && [[NSUserDefaults standardUserDefaults] objectForKey:@"password"]) {
-        [[NSUserDefaults standardUserDefaults] setObject:nil forKey:@"username"];
-        [[NSUserDefaults standardUserDefaults] setObject:nil forKey:@"password"];
+    
+    if ([FBSDKAccessToken currentAccessToken]) {
+        FBSDKLoginManager *login = [[FBSDKLoginManager alloc] init];
         
-        [self performSegueWithIdentifier:@"pop up login view" sender:self];
+        NSLog(@"facebook user log out");
+        
+        [login logOut];
+    }else {
+        if ([[NSUserDefaults standardUserDefaults] objectForKey:@"username"] && [[NSUserDefaults standardUserDefaults] objectForKey:@"password"]) {
+            [[NSUserDefaults standardUserDefaults] setObject:nil forKey:@"username"];
+            [[NSUserDefaults standardUserDefaults] setObject:nil forKey:@"password"];
+            
+            NSLog(@"email user log out");
+            
+            [self performSegueWithIdentifier:@"pop up login view" sender:self];
+        }
     }
 }
 
@@ -171,10 +260,8 @@
     }else {
         [self displayUserProfile];
         
-        self.facebookLoginButton.hidden = NO;
-        self.normalUserLogoutButton.hidden = YES;
+        self.emailUserProfilePictureView.hidden = YES;
         
-        NSLog(@"bra");
         [self fetchAndVerifyUserInfoFromFBandAndUpdateUserLocationAndUpdateUI];
     }
 }
@@ -206,9 +293,6 @@
     NSDictionary* emailUserInfoDictionary = (NSDictionary *)[NSJSONSerialization JSONObjectWithData:[getUserInfoServerReply dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
     
     if (emailUserInfoDictionary[@"error"] == nil) {
-        
-        self.facebookLoginButton.hidden = YES;
-        self.normalUserLogoutButton.hidden = NO;
         
         [self updateUIwithUserInfo:emailUserInfoDictionary[@"success"]];
     }else {
@@ -247,6 +331,7 @@
         [self.userNameLabel setText:@"Email User"];
     }
 }
+
 
 #pragma mark - fetch user info from FB / create User in server
 

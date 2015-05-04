@@ -7,11 +7,12 @@ Progress
 2. Sign in/up view
 3. User sign in/up/out with email/facebook works
 4. Get user's location works
+5. User can edit his profile picture now
 
 Todo
 ---
-1. udpate user's geo location everytime user log in
-2. feature (ability) to update profile picture for email user, send image to S3 and update the returned URL to server.
+1. udpate user's geo location to server everytime user log in
+2. feature (ability) to update profile picture for email user(**finished**), send image to S3 and update the returned URL to server.
 
 Issue
 ---
