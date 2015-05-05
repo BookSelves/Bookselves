@@ -7,6 +7,11 @@ target 'Bookselves-App' do
   pod 'QBImagePickerController', '~> 3.2'
   pod 'AFAmazonS3Manager', '~> 3.2'
   pod 'SDWebImage', '~> 3.7'
+
+  pod 'AWSCore'
+  pod 'AWSS3'
+  pod 'AWSCognito'
+  pod 'AWSCognitoSync'
 end
 
 target 'Bookselves-AppTests' do

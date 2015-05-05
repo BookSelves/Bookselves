@@ -16,5 +16,7 @@ NSString* const verifyUSerURL =@"http://bookselves.herokuapp.com/user/verify";
 NSString* const updateUSerURL =@"http://bookselves.herokuapp.com/user/update";
 NSString* const getUSerURLwithoutID =@"http://bookselves.herokuapp.com/user/";
 
+NSString* const s3BucketName = @"bookselves-user-profile-pictures";
+
 
 @end

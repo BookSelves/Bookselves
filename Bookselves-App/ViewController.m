@@ -10,9 +10,15 @@
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <FBSDKLoginKit/FBSDKLoginKit.h>
 #import "constants.h"
+#import "Utils.h"
 #import "CoreLocation/CoreLocation.h"
 #import <INTULocationManager/INTULocationManager.h>
 #import <QBImagePickerController/QBImagePickerController.h>
+#import <AFAmazonS3Manager/AFAmazonS3Manager.h>
+#import <AWSS3/AWSS3.h>
+#import <AWSCore/AWSCore.h>
+#import <AWSCognito/AWSCognito.h>
+
 
 @interface ViewController ()
 
@@ -23,10 +29,14 @@
 @property (weak, nonatomic) IBOutlet UIView *emailUserProfilePictureView;
 @property (weak, nonatomic) IBOutlet UIImageView *emailUserProfilePicture;
 
-
 @end
 
 @implementation ViewController
+
+#pragma mark - some constants
+
+static const int profile_image_size = 200;
+
 
 #pragma mark - view life cycle
 
@@ -87,7 +97,7 @@
     }
 }
 
-#pragma mark - image pick/upload/display
+#pragma mark - image pick/update to server/uplaod to s3
 
 - (IBAction)changeProfilePictureButtonTouchedHandler:(id)sender {
     QBImagePickerController *imagePickerController = [QBImagePickerController new];
@@ -118,6 +128,12 @@
                                                 resultHandler:^(UIImage *result, NSDictionary *info) {
                                                     self.emailUserProfilePicture.image = result;
                                                     NSLog(@"finished setting up new profile picture");
+                                                    UIImage *resizedImage = [self imageWithImage:result
+                                                                                    scaledToSize:CGSizeMake(profile_image_size, profile_image_size)];
+                                                    
+                                                    [self createLoadingView];
+                                                    [self uploadImage:resizedImage ToS3Bucket:s3BucketName];
+                                                    
                                                 }];
     }
     [self dismissViewControllerAnimated:YES completion:NULL];
@@ -147,6 +163,92 @@
 }
 
 
+//-------------------- image uplaod to s3 (referred from https://github.com/barrettbreshears/s3-objectiveC) ----------------
+
+- (void) uploadImage:(UIImage*)image ToS3Bucket:(NSString*)bucket
+{
+    NSString *path = [NSTemporaryDirectory() stringByAppendingString:[NSString stringWithFormat:@"%@-profile-picture.png",[[NSUserDefaults standardUserDefaults] objectForKey:@"username"]]];
+    NSData *imageData = UIImagePNGRepresentation(image);
+    [imageData writeToFile:path atomically:YES];
+    
+    NSURL *url = [[NSURL alloc] initFileURLWithPath:path];
+    
+    _uploadRequest = [AWSS3TransferManagerUploadRequest new];
+    _uploadRequest.bucket = bucket;
+    
+    _uploadRequest.ACL = AWSS3ObjectCannedACLPublicRead;
+    
+    _uploadRequest.key = [NSString stringWithFormat:@"%@-profile-picture.png",[[NSUserDefaults standardUserDefaults] objectForKey:@"user_id"]];
+    _uploadRequest.contentType = @"image/png";
+    _uploadRequest.body = url;
+    
+    
+    __weak ViewController *weakSelf = self;
+    
+    _uploadRequest.uploadProgress = ^(int64_t byteSent, int64_t totalByteSent, int64_t totalByteExpectedToSend) {
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            weakSelf.amountUploaded = totalByteSent;
+            weakSelf.fileSize = totalByteExpectedToSend;
+            [weakSelf updateUploadingUI];
+        });
+    };
+    
+    AWSS3TransferManager *transferManager = [AWSS3TransferManager defaultS3TransferManager];
+    
+    [[transferManager upload:_uploadRequest] continueWithExecutor:[BFExecutor mainThreadExecutor] withBlock:^id(BFTask *task) {
+        // once the uploadmanager finishes check if there were any errors
+        if (task.error) {
+            NSLog(@"uploading ERROR: %@", task.error);
+        }else{
+            NSLog(@"https://s3.amazonaws.com/%@/%@", bucket, [NSString stringWithFormat:@"%@-profile-picture.png",[[NSUserDefaults standardUserDefaults] objectForKey:@"user_id"]]);
+            [UIView animateWithDuration:0.3
+                             animations:^{
+                                 _loadingBg.alpha = 0;
+                                 _progressView.alpha = 0;
+                                 _progressLabel.alpha = 0;
+                             } completion:^(BOOL finished) {
+                                 _loadingBg.hidden = 0;
+                             }];
+        }
+        return nil;
+    }];
+    
+}
+
+- (UIImage *)imageWithImage:(UIImage *)image scaledToSize:(CGSize)newSize {
+    //UIGraphicsBeginImageContext(newSize);
+    // In next line, pass 0.0 to use the current device's pixel scaling factor (and thus account for Retina resolution).
+    // Pass 1.0 to force exact pixel size.
+    UIGraphicsBeginImageContextWithOptions(newSize, NO, 0.0);
+    [image drawInRect:CGRectMake(0, 0, newSize.width, newSize.height)];
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return newImage;
+}
+
+
+- (void) updateUploadingUI
+{
+     _progressLabel.text = [NSString stringWithFormat:@"Uploading:%.0f%%", ((float)self.amountUploaded/ (float)self.fileSize) * 100];
+}
+
+- (void) createLoadingView
+{
+    _loadingBg = [[UIView alloc] initWithFrame:self.view.frame];
+    [_loadingBg setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.35]];
+    [self.view addSubview:_loadingBg];
+    
+    _progressView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 250, 50)];
+    _progressView.center = self.view.center;
+    [_progressView setBackgroundColor:[UIColor whiteColor]];
+    [_loadingBg addSubview:_progressView];
+    
+    _progressLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 250, 50)];
+    [_progressLabel setTextAlignment:NSTextAlignmentCenter];
+    [_progressView addSubview:_progressLabel];
+    
+    _progressLabel.text = @"Uploading:";
+}
 
 
 #pragma mark - location service
@@ -203,7 +305,7 @@
         
         NSDictionary *locationInfo = [[NSDictionary alloc] initWithObjectsAndKeys:facebook_id, @"facebook_id", [[FBSDKAccessToken currentAccessToken] tokenString], @"auth_token", longitude, @"lng", latitude, @"lat", nil];
         NSLog([locationInfo description]);
-        NSString *serverReply = [self sendRequestToURL:updatePath
+        NSString *serverReply = [Utils sendRequestToURL:updatePath
                       withData:locationInfo
                     withMethod:@"PUT"];
         NSLog(@"facebook user update location reply: %@",serverReply);
@@ -211,7 +313,7 @@
         //if email user
         NSDictionary *locationInfo = [[NSDictionary alloc] initWithObjectsAndKeys:[[NSUserDefaults standardUserDefaults] objectForKey:@"username"], @"username", [[NSUserDefaults standardUserDefaults] objectForKey:@"password"], @"password", longitude, @"lng", latitude, @"lat", nil];
         NSLog([locationInfo description]);
-        NSString *serverReply = [self sendRequestToURL:updatePath
+        NSString *serverReply = [Utils sendRequestToURL:updatePath
                       withData:locationInfo
                     withMethod:@"PUT"];
         NSLog(@"Email user update location reply: %@", serverReply);
@@ -237,6 +339,7 @@
         if ([[NSUserDefaults standardUserDefaults] objectForKey:@"username"] && [[NSUserDefaults standardUserDefaults] objectForKey:@"password"]) {
             [[NSUserDefaults standardUserDefaults] setObject:nil forKey:@"username"];
             [[NSUserDefaults standardUserDefaults] setObject:nil forKey:@"password"];
+            [[NSUserDefaults standardUserDefaults] setObject:nil forKey:@"user_id"];
             
             NSLog(@"email user log out");
             
@@ -285,7 +388,7 @@
 - (void)observedEmailUserIdChangeHandler:(NSNotification*)emailUserIdChangeNotificiation
 {
     NSDictionary *emailUserId = [emailUserIdChangeNotificiation userInfo];
-    NSString* getUserInfoServerReply = [self sendRequestToURL:[NSString stringWithFormat:@"%@/user/%@", serverURL, emailUserId[@"success"]]
+    NSString* getUserInfoServerReply = [Utils sendRequestToURL:[NSString stringWithFormat:@"%@/user/%@", serverURL, emailUserId[@"success"]]
                   withData:nil
                 withMethod:@"GET"];
     NSLog(getUserInfoServerReply);
@@ -344,7 +447,7 @@
 {
     if ([FBSDKAccessToken currentAccessToken]) {
         NSDictionary* fbUserInfo = [[NSDictionary alloc] initWithObjectsAndKeys:facebookID,@"facebook_id",[[FBSDKAccessToken currentAccessToken] tokenString], @"auth_token", nil];
-        NSString *verifyFacebookUserServerReply = [self sendRequestToURL:[self appendEncodedDictionary:fbUserInfo ToURL:[NSString stringWithFormat:@"%@/user/verify?", serverURL]]
+        NSString *verifyFacebookUserServerReply = [Utils sendRequestToURL:[Utils appendEncodedDictionary:fbUserInfo ToURL:[NSString stringWithFormat:@"%@/user/verify?", serverURL]]
                                                                 withData:nil
                                                               withMethod:@"GET"];
         NSLog(@"facebook user existed on server?: %@", verifyFacebookUserServerReply);
@@ -377,68 +480,6 @@
         }];
     }
 }
-
-
-//duplicated code from LoginViewController (description can also be found there)
-#pragma mark - Server Query & JSON Parsing
-
-//will be used for verification
-- (NSString*) appendEncodedDictionary:(NSDictionary*)dictionary ToURL:(NSString*)url
-{
-    return [url stringByAppendingString:[NSString stringWithFormat:@"%@", [self turnDictionaryIntoParamsOfURL:dictionary]]];
-}
-
-- (NSString *) turnDictionaryIntoParamsOfURL:(NSDictionary*)dictionary
-{
-    
-    NSMutableArray *parts = [[NSMutableArray alloc] init];
-    for (NSString *key in dictionary)
-    {
-        NSString *encodedValue = [[dictionary objectForKey:key] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-        NSString *encodedKey = [key stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-        NSString *part = [NSString stringWithFormat: @"%@=%@", encodedKey, encodedValue];
-        [parts addObject:part];
-    }
-    NSString *encodedDictionary = [parts componentsJoinedByString:@"&"];
-    return encodedDictionary;
-}
-
-- (NSData*)encodeDictionary:(NSDictionary*)dictionary
-{
-    NSString *encodedDictionary = [self turnDictionaryIntoParamsOfURL:dictionary];
-    //NSLog(encodedDictionary);
-    return [encodedDictionary dataUsingEncoding:NSUTF8StringEncoding];
-}
-
-- (NSString *)sendRequestToURL:(NSString *)url withData:(NSDictionary *)data withMethod: (NSString *)method
-{
-    NSMutableURLRequest *urlRequest = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:url]];
-    [urlRequest setHTTPMethod:method];
-    NSData *httpData = [self encodeDictionary:data];
-    [urlRequest setHTTPBody:httpData];
-    NSHTTPURLResponse *response;
-    NSError *error;
-    NSData* result = [NSURLConnection sendSynchronousRequest:urlRequest  returningResponse:&response error:&error];
-    if([response statusCode] >= 400 || [response statusCode] == 0)
-    {
-//        NSLog(@"status code: %@", [response statusCode]);
-        NSLog(@"error: %@", [error description]);
-        return nil;
-    }
-    return [[NSString alloc] initWithData:result encoding:NSUTF8StringEncoding];
-}
-
-/**
- parse server reply from JSON format to NSDictionary
- @param serverReply
-        the reply in JSON format sent back from server
- @return key-value pair of JSON data in NSDictionary
- */
-- (NSDictionary*)serverJsonReplyParser:(NSString*)serverReply
-{
-    return (NSDictionary *)[NSJSONSerialization JSONObjectWithData:[serverReply dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
-}
-
 
 
 

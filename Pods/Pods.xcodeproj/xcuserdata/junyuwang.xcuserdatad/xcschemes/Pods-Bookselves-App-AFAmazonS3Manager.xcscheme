@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "56DACAE686D33CC3F6E4EB6C"
+               BlueprintIdentifier = "C8585480A3E75647BEE7FCCF"
                BuildableName = "libPods-Bookselves-App-AFAmazonS3Manager.a"
                BlueprintName = "Pods-Bookselves-App-AFAmazonS3Manager"
                ReferencedContainer = "container:Pods.xcodeproj">

@@ -11,6 +11,7 @@
 #import <FBSDKLoginKit/FBSDKLoginKit.h>
 #import "constants.h"
 #import "ViewController.h"
+#import "Utils.h"
 
 @interface LoginViewController ()
 @property (weak, nonatomic) IBOutlet UITextField *inputEmail;
@@ -112,14 +113,14 @@
         
         NSDictionary *signInInputData = [[NSDictionary alloc] initWithObjectsAndKeys:self.inputEmail_signIn.text, @"username", self.inputPassword_signIn.text, @"password", nil];
         //NSLog([self appendEncodedDictionary:signInInputData ToURL:[NSString stringWithFormat:@"%@/user/verify?", serverURL]]);
-        NSString* verifyUserServerReply = [self sendRequestToURL:[self appendEncodedDictionary:signInInputData ToURL:[NSString stringWithFormat:@"%@/user/verify?", serverURL]]
+        NSString* verifyUserServerReply = [Utils sendRequestToURL:[Utils appendEncodedDictionary:signInInputData ToURL:[NSString stringWithFormat:@"%@/user/verify?", serverURL]]
                       
                                                         withData:nil
                     
                                                       withMethod:@"GET"];
         NSLog(verifyUserServerReply);
         
-        NSDictionary *verifyUserServerReplyDictionary = [self serverJsonReplyParser:verifyUserServerReply];
+        NSDictionary *verifyUserServerReplyDictionary = [Utils serverJsonReplyParser:verifyUserServerReply];
         
         //if user exists go back to the profile view controller.
         if (verifyUserServerReplyDictionary[@"success"] != nil) {
@@ -127,6 +128,7 @@
             //store user information into NSUserDefault
             [[NSUserDefaults standardUserDefaults] setObject:signInInputData[@"username"] forKey:@"username"];
             [[NSUserDefaults standardUserDefaults] setObject:signInInputData[@"password"] forKey:@"password"];
+            [[NSUserDefaults standardUserDefaults] setObject:verifyUserServerReplyDictionary[@"success"] forKey:@"user_id"];
             
             [[NSNotificationCenter defaultCenter] postNotificationName:@"EmailUserIdChangeNotification" object:nil userInfo:verifyUserServerReplyDictionary];
             
@@ -184,14 +186,14 @@
         
         NSDictionary *registrationData = [[NSDictionary alloc] initWithObjectsAndKeys:self.inputEmail.text, @"username", self.inputPassword.text, @"password", nil];
         
-        NSString *registerUserServerReply = [self sendRequestToURL:[NSString stringWithFormat:@"%@/user/create", serverURL]
+        NSString *registerUserServerReply = [Utils sendRequestToURL:[NSString stringWithFormat:@"%@/user/create", serverURL]
                       
                                                   withData:registrationData
                           
                                                 withMethod:@"POST"];
         NSLog(registerUserServerReply);
         
-        NSDictionary *registerUserServerReplyDictionary = [self serverJsonReplyParser:registerUserServerReply];
+        NSDictionary *registerUserServerReplyDictionary = [Utils serverJsonReplyParser:registerUserServerReply];
         
         //if registered successfully, log user in and dismiss current view controller
         if (registerUserServerReplyDictionary[@"success"] != nil) {
@@ -199,6 +201,7 @@
             //store user information into NSUserDefault
             [[NSUserDefaults standardUserDefaults] setObject:registrationData[@"username"] forKey:@"username"];
             [[NSUserDefaults standardUserDefaults] setObject:registrationData[@"password"] forKey:@"password"];
+            [[NSUserDefaults standardUserDefaults] setObject:registerUserServerReplyDictionary[@"success"] forKey:@"user_id"];
             
             [[NSNotificationCenter defaultCenter] postNotificationName:@"EmailUserIdChangeNotification" object:nil userInfo:registerUserServerReplyDictionary];
             
@@ -213,99 +216,6 @@
         }
     }
 }
-
-#pragma mark - formatize URL
-
-/**
- Append information in dictonary to URL, used for user verification
- @param dictionary
-        A NSDictionary that contains needed info to append to URL
- @param url
-        The original URL
- @code
- signInInputData --> [@"username":@"user_name", @"password":@"user_password"]
- [self appendEncodedDictionary:signInInputData ToURL:@"http://example.com/user/verify?"] --> @"http://example.com/user/verify?username=user_name&password=user_password"
- @endcode
- */
-- (NSString*) appendEncodedDictionary:(NSDictionary*)dictionary ToURL:(NSString*)url
-{
-    return [url stringByAppendingString:[NSString stringWithFormat:@"%@", [self turnDictionaryIntoParamsOfURL:dictionary]]];
-}
-
-/**
- Turn information in dictionary to parameters of URL
- @param dictionary
-        The NSDictionary containing query information
- @code
- dictionary --> [@"username":@"user_name", @"password":@"user_password"]
- NSString* output = [self turnDictionaryIntoParamsOfURL:dictionary]
- output --> @"username=user_name&password=user_password"
- @endcode
- */
-- (NSString *) turnDictionaryIntoParamsOfURL:(NSDictionary*)dictionary
-{
-    
-    NSMutableArray *parts = [[NSMutableArray alloc] init];
-    for (NSString *key in dictionary)
-    {
-        NSString *encodedValue = [[dictionary objectForKey:key] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-        NSString *encodedKey = [key stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-        NSString *part = [NSString stringWithFormat: @"%@=%@", encodedKey, encodedValue];
-        [parts addObject:part];
-    }
-    NSString *encodedDictionary = [parts componentsJoinedByString:@"&"];
-    return encodedDictionary;
-}
-
-/**
- encode dictionary into NSData
- @param dictionary
-        NSDictionary
- */
-- (NSData*)encodeDictionary:(NSDictionary*)dictionary
-{
-    NSString *encodedDictionary = [self turnDictionaryIntoParamsOfURL:dictionary];
-    //NSLog(encodedDictionary);
-    return [encodedDictionary dataUsingEncoding:NSUTF8StringEncoding];
-}
-
-/**
- send HTTP request
- @param url
-        endpoint of server
- @param data
-        data in the body of HTTP request
- @param method
-        "GET", "POST", "PATCH", "DELETE"
- */
-- (NSString *)sendRequestToURL:(NSString *)url withData:(NSDictionary *)data withMethod: (NSString *)method
-{
-    NSMutableURLRequest *urlRequest = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:url]];
-    [urlRequest setHTTPMethod:method];
-    NSData *httpData = [self encodeDictionary:data];
-    [urlRequest setHTTPBody:httpData];
-    NSHTTPURLResponse *response;
-    NSError *error;
-    NSData* result = [NSURLConnection sendSynchronousRequest:urlRequest  returningResponse:&response error:&error];
-    if([response statusCode] >= 400 || [response statusCode] == 0)
-    {
-        NSLog(@"%@", [error description]);
-        return nil;
-    }
-    return [[NSString alloc] initWithData:result encoding:NSUTF8StringEncoding];
-}
-
-/**
- parse server reply from JSON format to NSDictionary
- @param serverReply
- the reply in JSON format sent back from server
- @return key-value pair of JSON data in NSDictionary
- */
-- (NSDictionary*)serverJsonReplyParser:(NSString*)serverReply
-{
-    return (NSDictionary *)[NSJSONSerialization JSONObjectWithData:[serverReply dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
-}
-
 
 
 /*
