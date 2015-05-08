@@ -9,6 +9,7 @@ Progress
 4. Get user's location works
 5. User can edit his profile picture now
 6. Upload new profile picture to S3 works
+7. When user log in download his profile picture from s3 and display as profile pic done
 
 Todo
 ---
