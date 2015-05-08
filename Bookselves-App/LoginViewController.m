@@ -18,11 +18,14 @@
 @property (weak, nonatomic) IBOutlet UITextField *inputPassword;
 @property (weak, nonatomic) IBOutlet UIButton *registerButton;
 @property (weak, nonatomic) IBOutlet UIButton *goToSignInViewButton;
+@property (weak, nonatomic) IBOutlet UILabel *goToSignInViewLabel;
 
 @property (weak, nonatomic) IBOutlet UIView *loginView;
 @property (weak, nonatomic) IBOutlet UIButton *signInButton;
 @property (weak, nonatomic) IBOutlet UITextField *inputEmail_signIn;
 @property (weak, nonatomic) IBOutlet UITextField *inputPassword_signIn;
+@property (weak, nonatomic) IBOutlet UIButton *goToSignUpViewButton;
+@property (weak, nonatomic) IBOutlet UILabel *goToSignUpViewLabel;
 
 @property (weak, nonatomic) IBOutlet UIButton *backButton;
 
@@ -87,7 +90,9 @@
                          self.inputEmail.alpha = 0;
                          self.inputPassword.alpha = 0;
                          self.registerButton.alpha = 0;
-
+                         
+                         self.goToSignUpViewLabel.alpha = 1;
+                         self.goToSignUpViewButton.alpha = 1;
                          self.loginView.alpha = 1;
                      }
                      completion:^(BOOL finished) {
@@ -157,6 +162,9 @@
                          self.inputEmail.alpha = 1;
                          self.inputPassword.alpha = 1;
                          self.registerButton.alpha = 1;
+                         self.goToSignInViewLabel.alpha = 1;
+                         self.goToSignInViewButton.alpha = 1;
+                         
                          self.loginView.alpha = 0;
                      }
                      completion:^(BOOL finished) {

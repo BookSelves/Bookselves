@@ -20,8 +20,10 @@
 @property (nonatomic, strong) UILabel *progressLabel;
 
 @property (strong, nonatomic) AWSS3TransferManagerUploadRequest *uploadRequest;
+@property (strong, nonatomic) AWSS3TransferManagerDownloadRequest *downloadRequest;
 @property (nonatomic) uint64_t fileSize;
 @property (nonatomic) uint64_t amountUploaded;
+@property (nonatomic, strong) UIActivityIndicatorView *activityIndicator;
 
 @end
 

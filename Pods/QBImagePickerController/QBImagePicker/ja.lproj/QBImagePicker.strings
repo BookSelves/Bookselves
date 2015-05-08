@@ -6,30 +6,17 @@
   Copyright (c) 2015 Katsuma Tanaka. All rights reserved.
 */
 //
-//"albums.title" = "アルバム";
-//
-//"assets.footer.photo" = "写真: %ld枚";
-//"assets.footer.photos" = "写真: %ld枚";
-//"assets.footer.video" = "ビデオ: %ld本";
-//"assets.footer.videos" = "ビデオ: %ld本";
-//"assets.footer.photo-and-video" = "写真: %ld枚、ビデオ%ld本";
-//"assets.footer.photos-and-video" = "写真: %ld枚、ビデオ%ld本";
-//"assets.footer.photo-and-videos" = "写真: %ld枚、ビデオ%ld本";
-//"assets.footer.photos-and-videos" = "写真: %ld枚、ビデオ%ld本";
-//
-//"assets.toolbar.item-selected" = "%ld 項目を選択中";
-//"assets.toolbar.items-selected" = "%ld 項目を選択中";
+"albums.title" = "アルバム";
 
-"albums.title" = "Photos";
+"assets.footer.photo" = "写真: %ld枚";
+"assets.footer.photos" = "写真: %ld枚";
+"assets.footer.video" = "ビデオ: %ld本";
+"assets.footer.videos" = "ビデオ: %ld本";
+"assets.footer.photo-and-video" = "写真: %ld枚、ビデオ%ld本";
+"assets.footer.photos-and-video" = "写真: %ld枚、ビデオ%ld本";
+"assets.footer.photo-and-videos" = "写真: %ld枚、ビデオ%ld本";
+"assets.footer.photos-and-videos" = "写真: %ld枚、ビデオ%ld本";
 
-"assets.footer.photo" = "%ld Photo";
-"assets.footer.photos" = "%ld Photos";
-"assets.footer.video" = "%ld Video";
-"assets.footer.videos" = "%ld Videos";
-"assets.footer.photo-and-video" = "%ld Photo, %ld Video";
-"assets.footer.photos-and-video" = "%ld Photos, %ld Video";
-"assets.footer.photo-and-videos" = "%ld Photo, %ld Videos";
-"assets.footer.photos-and-videos" = "%ld Photos, %ld Videos";
+"assets.toolbar.item-selected" = "%ld 項目を選択中";
+"assets.toolbar.items-selected" = "%ld 項目を選択中";
 
-"assets.toolbar.item-selected" = "%ld Item Selected";
-"assets.toolbar.items-selected" = "%ld Items Selected";

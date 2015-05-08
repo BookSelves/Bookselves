@@ -276,6 +276,18 @@
                                     <rect key="frame" x="49" y="236" width="205" height="21"/>
                                 </variation>
                             </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kJx-Ui-JWW">
+                                <rect key="frame" x="-23" y="-15" width="46" height="30"/>
+                                <state key="normal" title="Back">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <variation key="widthClass=compact" fixedFrame="YES">
+                                    <rect key="frame" x="16" y="28" width="35" height="30"/>
+                                </variation>
+                                <connections>
+                                    <action selector="backButtonTouchedHandler:" destination="I4h-hF-W56" eventType="touchUpInside" id="pId-Gs-caw"/>
+                                </connections>
+                            </button>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6Vg-Hn-C6Q">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                                 <subviews>
@@ -295,25 +307,13 @@
                                             <rect key="frame" x="30" y="38" width="276" height="30"/>
                                         </variation>
                                     </textField>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="66a-MV-2dT">
-                                        <rect key="frame" x="-23" y="-15" width="46" height="30"/>
-                                        <state key="normal" title="Sign In">
-                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                        </state>
-                                        <variation key="widthClass=compact" fixedFrame="YES">
-                                            <rect key="frame" x="31" y="85" width="48" height="30"/>
-                                        </variation>
-                                        <connections>
-                                            <action selector="signInButtonHandler:" destination="I4h-hF-W56" eventType="touchUpInside" id="y9T-VS-7ba"/>
-                                        </connections>
-                                    </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4Fv-qG-KYh">
                                         <rect key="frame" x="-23" y="-15" width="46" height="30"/>
                                         <state key="normal" title="Sign up">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                         <variation key="widthClass=compact" fixedFrame="YES">
-                                            <rect key="frame" x="228" y="160" width="53" height="30"/>
+                                            <rect key="frame" x="228" y="165" width="53" height="30"/>
                                         </variation>
                                         <connections>
                                             <action selector="signUpButtonHandler:" destination="I4h-hF-W56" eventType="touchUpInside" id="8eW-NX-kbg"/>
@@ -325,43 +325,43 @@
                                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                         <nil key="highlightedColor"/>
                                         <variation key="widthClass=compact" fixedFrame="YES">
-                                            <rect key="frame" x="34" y="145" width="186" height="60"/>
+                                            <rect key="frame" x="34" y="150" width="186" height="60"/>
                                         </variation>
                                     </label>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="66a-MV-2dT">
+                                        <rect key="frame" x="-23" y="-15" width="46" height="30"/>
+                                        <state key="normal" title="Sign In">
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <variation key="widthClass=compact" fixedFrame="YES">
+                                            <rect key="frame" x="31" y="76" width="48" height="30"/>
+                                        </variation>
+                                        <connections>
+                                            <action selector="signInButtonHandler:" destination="I4h-hF-W56" eventType="touchUpInside" id="y9T-VS-7ba"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <variation key="default">
                                     <mask key="subviews">
                                         <exclude reference="w2L-t6-M5F"/>
                                         <exclude reference="5VV-6H-3QX"/>
-                                        <exclude reference="66a-MV-2dT"/>
                                         <exclude reference="4Fv-qG-KYh"/>
                                         <exclude reference="ZLP-28-xVX"/>
+                                        <exclude reference="66a-MV-2dT"/>
                                     </mask>
                                 </variation>
                                 <variation key="widthClass=compact" fixedFrame="YES">
-                                    <rect key="frame" x="16" y="64" width="363" height="511"/>
+                                    <rect key="frame" x="19" y="66" width="363" height="511"/>
                                     <mask key="subviews">
                                         <include reference="w2L-t6-M5F"/>
                                         <include reference="5VV-6H-3QX"/>
-                                        <include reference="66a-MV-2dT"/>
                                         <include reference="4Fv-qG-KYh"/>
                                         <include reference="ZLP-28-xVX"/>
+                                        <include reference="66a-MV-2dT"/>
                                     </mask>
                                 </variation>
                             </view>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kJx-Ui-JWW">
-                                <rect key="frame" x="-23" y="-15" width="46" height="30"/>
-                                <state key="normal" title="Back">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <variation key="widthClass=compact" fixedFrame="YES">
-                                    <rect key="frame" x="16" y="28" width="35" height="30"/>
-                                </variation>
-                                <connections>
-                                    <action selector="backButtonTouchedHandler:" destination="I4h-hF-W56" eventType="touchUpInside" id="pId-Gs-caw"/>
-                                </connections>
-                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <variation key="default">
@@ -371,8 +371,8 @@
                                 <exclude reference="nNv-Eh-Q6d"/>
                                 <exclude reference="fY6-7R-egU"/>
                                 <exclude reference="SA9-5x-0si"/>
-                                <exclude reference="6Vg-Hn-C6Q"/>
                                 <exclude reference="kJx-Ui-JWW"/>
+                                <exclude reference="6Vg-Hn-C6Q"/>
                             </mask>
                         </variation>
                         <variation key="widthClass=compact">
@@ -382,14 +382,17 @@
                                 <include reference="nNv-Eh-Q6d"/>
                                 <include reference="fY6-7R-egU"/>
                                 <include reference="SA9-5x-0si"/>
-                                <include reference="6Vg-Hn-C6Q"/>
                                 <include reference="kJx-Ui-JWW"/>
+                                <include reference="6Vg-Hn-C6Q"/>
                             </mask>
                         </variation>
                     </view>
                     <connections>
                         <outlet property="backButton" destination="kJx-Ui-JWW" id="7Sl-Ky-iHc"/>
                         <outlet property="goToSignInViewButton" destination="fY6-7R-egU" id="KmR-lr-0oM"/>
+                        <outlet property="goToSignInViewLabel" destination="SA9-5x-0si" id="MOD-Qj-3z0"/>
+                        <outlet property="goToSignUpViewButton" destination="4Fv-qG-KYh" id="crd-K5-jD5"/>
+                        <outlet property="goToSignUpViewLabel" destination="ZLP-28-xVX" id="7XN-wq-ZHN"/>
                         <outlet property="inputEmail" destination="U35-gy-0N8" id="UQc-lf-aUE"/>
                         <outlet property="inputEmail_signIn" destination="w2L-t6-M5F" id="vFQ-GV-nt9"/>
                         <outlet property="inputPassword" destination="ULF-2i-zKn" id="NEJ-cR-aAK"/>

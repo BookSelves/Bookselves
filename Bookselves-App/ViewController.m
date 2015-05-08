@@ -73,6 +73,11 @@ static const int profile_image_size = 200;
             
             //get user's location
             [self getUserLocationAndUpdateToServerWithFacebookID:nil];
+            
+            //download user image from s3 and set it to profile picture
+            [self downloadImage:[NSString stringWithFormat:@"%@-profile-picture.png", [[NSUserDefaults standardUserDefaults] objectForKey:@"user_id"]]
+                     FromBucket:s3BucketName
+         AndSetToProfilePicture:self.emailUserProfilePicture];
         }
     }
 }
@@ -157,6 +162,7 @@ static const int profile_image_size = 200;
     NSLog([asset description]);
 }
 
+
 - (void)qb_imagePickerController:(QBImagePickerController *)imagePickerController didDeselectAsset:(PHAsset *)asset
 {
     NSLog(@"deselect %@", [asset description]);
@@ -167,7 +173,7 @@ static const int profile_image_size = 200;
 
 - (void) uploadImage:(UIImage*)image ToS3Bucket:(NSString*)bucket
 {
-    NSString *path = [NSTemporaryDirectory() stringByAppendingString:[NSString stringWithFormat:@"%@-profile-picture.png",[[NSUserDefaults standardUserDefaults] objectForKey:@"username"]]];
+    NSString *path = [NSTemporaryDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"%@-profile-picture.png",[[NSUserDefaults standardUserDefaults] objectForKey:@"username"]]];
     NSData *imageData = UIImagePNGRepresentation(image);
     [imageData writeToFile:path atomically:YES];
     
@@ -198,9 +204,9 @@ static const int profile_image_size = 200;
     [[transferManager upload:_uploadRequest] continueWithExecutor:[BFExecutor mainThreadExecutor] withBlock:^id(BFTask *task) {
         // once the uploadmanager finishes check if there were any errors
         if (task.error) {
-            NSLog(@"uploading ERROR: %@", task.error);
+            NSLog(@"Uploading ERROR: %@", task.error);
         }else{
-            NSLog(@"https://s3.amazonaws.com/%@/%@", bucket, [NSString stringWithFormat:@"%@-profile-picture.png",[[NSUserDefaults standardUserDefaults] objectForKey:@"user_id"]]);
+            NSLog(@"Success: https://s3.amazonaws.com/%@/%@", bucket, [NSString stringWithFormat:@"%@-profile-picture.png",[[NSUserDefaults standardUserDefaults] objectForKey:@"user_id"]]);
             [UIView animateWithDuration:0.3
                              animations:^{
                                  _loadingBg.alpha = 0;
@@ -212,7 +218,6 @@ static const int profile_image_size = 200;
         }
         return nil;
     }];
-    
 }
 
 - (UIImage *)imageWithImage:(UIImage *)image scaledToSize:(CGSize)newSize {
@@ -248,6 +253,76 @@ static const int profile_image_size = 200;
     [_progressView addSubview:_progressLabel];
     
     _progressLabel.text = @"Uploading:";
+}
+
+#pragma mark - download image from s3 and set to profile picture
+
+- (void) downloadImage:(NSString*)image FromBucket:(NSString*)bucket AndSetToProfilePicture:(UIImageView*)profilePicture
+{
+    //start animating downloading indicator
+    [self createDownloadingIndicator];
+    
+    NSString *downloadingPath = [NSTemporaryDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"%@-profile-picture.png",[[NSUserDefaults standardUserDefaults] objectForKey:@"user_id"]]];
+    
+    NSURL *downloadingURL = [NSURL fileURLWithPath:downloadingPath];
+    
+    _downloadRequest = [AWSS3TransferManagerDownloadRequest new];
+    
+    _downloadRequest.bucket = bucket;
+    _downloadRequest.key = image;
+    _downloadRequest.downloadingFileURL = downloadingURL;
+    
+    AWSS3TransferManager *transferManager = [AWSS3TransferManager defaultS3TransferManager];
+    
+    [[transferManager download:_downloadRequest] continueWithExecutor:[BFExecutor mainThreadExecutor]
+                                                            withBlock:^id(BFTask *task) {
+                                                                //stop animation of indicator
+                                                                [_activityIndicator stopAnimating];
+                                                                
+                                                                if (task.error){
+                                                                    if ([task.error.domain isEqualToString:AWSS3TransferManagerErrorDomain]) {
+                                                                        switch (task.error.code) {
+                                                                            case AWSS3TransferManagerErrorCancelled:
+                                                                            case AWSS3TransferManagerErrorPaused:
+                                                                                break;
+                                                                            default:
+                                                                                NSLog(@"Error: %@", task.error);
+                                                                                break;
+                                                                        }
+                                                                    } else {
+                                                                        // Unknown error.
+                                                                        NSLog(@"Error: %@", task.error);
+                                                                    }
+                                                                }
+                                                                if (task.result) {
+                                                                    AWSS3TransferManagerDownloadOutput *downloadOutput = task.result;
+                                                                    //File downloaded successfully.
+                                                                    [self setImageFromFilePath:downloadingPath
+                                                                                   toImageView:profilePicture];
+                                                                }
+                                                                return nil;
+                                                            }];
+}
+
+- (void) setImageFromFilePath:(NSString*)filePath toImageView:(UIImageView*)imageView
+{
+    UIImage *image = [UIImage imageWithContentsOfFile:filePath];
+    if (!image) {
+        return;
+    }else {
+        imageView.image = image;
+    }
+}
+
+- (void)createDownloadingIndicator
+{
+    _activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    _activityIndicator.frame = self.view.frame;
+    _activityIndicator.hidesWhenStopped = YES;
+    
+    [self.view addSubview:_activityIndicator];
+    
+    [_activityIndicator startAnimating];
 }
 
 
