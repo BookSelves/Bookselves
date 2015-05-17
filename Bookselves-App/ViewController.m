@@ -75,9 +75,12 @@ static const int profile_image_size = 200;
             [self getUserLocationAndUpdateToServerWithFacebookID:nil];
             
             //download user image from s3 and set it to profile picture
+            
+            // ???: should brute force user's profile picture name or should retrieve the url from server
+            
             [self downloadImage:[NSString stringWithFormat:@"%@-profile-picture.png", [[NSUserDefaults standardUserDefaults] objectForKey:@"user_id"]]
                      FromBucket:s3BucketName
-         AndSetToProfilePicture:self.emailUserProfilePicture];
+         AndSetToImageView:self.emailUserProfilePicture];
         }
     }
 }
@@ -86,7 +89,6 @@ static const int profile_image_size = 200;
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-
 
 - (void) viewDidAppear:(BOOL)animated
 {
@@ -131,14 +133,12 @@ static const int profile_image_size = 200;
                                                   contentMode:PHImageContentModeDefault
                                                       options:nil
                                                 resultHandler:^(UIImage *result, NSDictionary *info) {
-                                                    self.emailUserProfilePicture.image = result;
                                                     NSLog(@"finished setting up new profile picture");
                                                     UIImage *resizedImage = [self imageWithImage:result
                                                                                     scaledToSize:CGSizeMake(profile_image_size, profile_image_size)];
                                                     
                                                     [self createLoadingView];
-                                                    [self uploadImage:resizedImage ToS3Bucket:s3BucketName];
-                                                    
+                                                    [self uploadImage:resizedImage ToS3Bucket:s3BucketName andSetToImageView:self.emailUserProfilePicture];
                                                 }];
     }
     [self dismissViewControllerAnimated:YES completion:NULL];
@@ -171,7 +171,7 @@ static const int profile_image_size = 200;
 
 //-------------------- image uplaod to s3 (referred from https://github.com/barrettbreshears/s3-objectiveC) ----------------
 
-- (void) uploadImage:(UIImage*)image ToS3Bucket:(NSString*)bucket
+- (void) uploadImage:(UIImage*)image ToS3Bucket:(NSString*)bucket andSetToImageView:(UIImageView*)imageView
 {
     NSString *path = [NSTemporaryDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"%@-profile-picture.png",[[NSUserDefaults standardUserDefaults] objectForKey:@"username"]]];
     NSData *imageData = UIImagePNGRepresentation(image);
@@ -204,9 +204,34 @@ static const int profile_image_size = 200;
     [[transferManager upload:_uploadRequest] continueWithExecutor:[BFExecutor mainThreadExecutor] withBlock:^id(BFTask *task) {
         // once the uploadmanager finishes check if there were any errors
         if (task.error) {
-            NSLog(@"Uploading ERROR: %@", task.error);
+            if ([task.error.domain isEqualToString:AWSS3TransferManagerErrorDomain]) {
+                switch (task.error.code) {
+                    case AWSS3TransferManagerErrorCancelled:
+                    case AWSS3TransferManagerErrorPaused:
+                        break;
+                        
+                    default:
+                        NSLog(@"Error: %@", task.error);
+                        break;
+                }
+            } else {
+                // Unknown error.
+                NSLog(@"Error: %@", task.error);
+            }
         }else{
-            NSLog(@"Success: https://s3.amazonaws.com/%@/%@", bucket, [NSString stringWithFormat:@"%@-profile-picture.png",[[NSUserDefaults standardUserDefaults] objectForKey:@"user_id"]]);
+            
+            NSString *imageURLinS3 = [NSString stringWithFormat:@"https://s3.amazonaws.com/%@/%@", bucket, [NSString stringWithFormat:@"%@-profile-picture.png",[[NSUserDefaults standardUserDefaults] objectForKey:@"user_id"]]];
+            
+            NSLog(@"Success: %@", imageURLinS3);
+            
+            [self setImageFromFilePath:path toImageView:imageView]; //if upload successfully, set as profile picture
+            
+            // FIXME: incorrect parameter error when updaing
+            
+            NSDictionary *userInfoWithProfilePictureURL = [[NSDictionary alloc] initWithObjectsAndKeys:[[NSUserDefaults standardUserDefaults] objectForKey:@"username"], @"username", [[NSUserDefaults standardUserDefaults] objectForKey:@"password"], @"password", imageURLinS3, @"profile_url", nil];
+            
+            [Utils updateUserInfo:userInfoWithProfilePictureURL];
+            
             [UIView animateWithDuration:0.3
                              animations:^{
                                  _loadingBg.alpha = 0;
@@ -257,7 +282,7 @@ static const int profile_image_size = 200;
 
 #pragma mark - download image from s3 and set to profile picture
 
-- (void) downloadImage:(NSString*)image FromBucket:(NSString*)bucket AndSetToProfilePicture:(UIImageView*)profilePicture
+- (void) downloadImage:(NSString*)image FromBucket:(NSString*)bucket AndSetToImageView:(UIImageView*)imageView
 {
     //start animating downloading indicator
     [self createDownloadingIndicator];
@@ -296,9 +321,10 @@ static const int profile_image_size = 200;
                                                                 }
                                                                 if (task.result) {
                                                                     AWSS3TransferManagerDownloadOutput *downloadOutput = task.result;
+                                                                    
                                                                     //File downloaded successfully.
                                                                     [self setImageFromFilePath:downloadingPath
-                                                                                   toImageView:profilePicture];
+                                                                                   toImageView:imageView];
                                                                 }
                                                                 return nil;
                                                             }];
@@ -317,7 +343,7 @@ static const int profile_image_size = 200;
 - (void)createDownloadingIndicator
 {
     _activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-    _activityIndicator.frame = self.view.frame;
+    _activityIndicator.center = self.view.center;
     _activityIndicator.hidesWhenStopped = YES;
     
     [self.view addSubview:_activityIndicator];
@@ -337,68 +363,57 @@ static const int profile_image_size = 200;
                           delayUntilAuthorized:YES  // This parameter is optional, defaults to NO if omitted
                                          block:^(CLLocation *currentLocation, INTULocationAccuracy achievedAccuracy, INTULocationStatus status) {
                                              if (status == INTULocationStatusSuccess) {
-                                                 [self updateUserLatitude:[NSString stringWithFormat:@"%f", currentLocation.coordinate.latitude]
-                                                                Longitude:[NSString stringWithFormat:@"%f", currentLocation.coordinate.longitude]
-                                                           withFacebookID:facebook_id];
-//                                                 [self updateUserLatitude:currentLocation.coordinate.latitude
-//                                                                Longitude:currentLocation.coordinate.longitude
-//                                                           withFacebookID:facebook_id];
-                                             }
-                                             else if (status == INTULocationStatusTimedOut) {
+                                                 NSString *latitude = [NSString stringWithFormat:@"%f", currentLocation.coordinate.latitude];
+                                                 NSString *longitude = [NSString stringWithFormat:@"%f", currentLocation.coordinate.longitude];
+   
+                                                 // FIXME: incorrect parameter when updaing user location
+                                                 
+                                                 if ([FBSDKAccessToken currentAccessToken]) {
+                                                     NSDictionary *locationInfo = [[NSDictionary alloc] initWithObjectsAndKeys:facebook_id, @"facebook_id", [[FBSDKAccessToken currentAccessToken] tokenString], @"auth_token", longitude, @"lng", latitude, @"lat", nil];
+                                                     
+                                                     [Utils updateUserInfo:locationInfo];
+                                                 }else {
+                                                     NSDictionary *locationInfo = [[NSDictionary alloc] initWithObjectsAndKeys:[[NSUserDefaults standardUserDefaults] objectForKey:@"username"], @"username", [[NSUserDefaults standardUserDefaults] objectForKey:@"password"], @"password", longitude, @"lng", latitude, @"lat", nil];
+                                                     
+                                                     [Utils updateUserInfo:locationInfo];
+                                                 }
+                                            }else if (status == INTULocationStatusTimedOut) {
                                                  // Wasn't able to locate the user with the requested accuracy within the timeout interval.
                                                  // However, currentLocation contains the best location available (if any) as of right now,
                                                  // and achievedAccuracy has info on the accuracy/recency of the location in currentLocation.
-                                                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error"
+                                                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error"
                                                                                                  message:@"Time out: could not find your location"
                                                                                                 delegate:nil
                                                                                        cancelButtonTitle:@"OK"
                                                                                        otherButtonTitles:nil];
-                                                 [alert show];
-                                                 
-                                                 [self updateUserLatitude:[NSString stringWithFormat:@"%f", currentLocation.coordinate.latitude]
-                                                                Longitude:[NSString stringWithFormat:@"%f", currentLocation.coordinate.longitude]
-                                                           withFacebookID:facebook_id];
-//                                                 [self updateUserLatitude:currentLocation.coordinate.latitude
-//                                                                Longitude:currentLocation.coordinate.longitude
-//                                                           withFacebookID:facebook_id];
+                                                [alert show];
+                                                NSString *latitude = [NSString stringWithFormat:@"%f", currentLocation.coordinate.latitude];
+                                                NSString *longitude = [NSString stringWithFormat:@"%f", currentLocation.coordinate.longitude];
+                                                
+                                                // FIXME: incorrect parameter when updaing user location
+                                                
+                                                if ([FBSDKAccessToken currentAccessToken]) {
+                                                    NSDictionary *locationInfo = [[NSDictionary alloc] initWithObjectsAndKeys:facebook_id, @"facebook_id", [[FBSDKAccessToken currentAccessToken] tokenString], @"auth_token", longitude, @"lng", latitude, @"lat", nil];
+                                                    [Utils updateUserInfo:locationInfo];
+                                                }else {
+                                                    NSDictionary *locationInfo = [[NSDictionary alloc] initWithObjectsAndKeys:[[NSUserDefaults standardUserDefaults] objectForKey:@"username"], @"username", [[NSUserDefaults standardUserDefaults] objectForKey:@"password"], @"password", longitude, @"lng", latitude, @"lat", nil];
+                         
+                                                    [Utils updateUserInfo:locationInfo];
+                                                }
                                              }
                                              else {
                                                  // An error occurred, more info is available by looking at the specific status returned.
-                                                 NSLog(@"strange error while getting location, check status");
+                                                 NSLog(@"strange error while getting location, status: %ld", (long)status);
+                                                 
                                              }
                                          }];
-}
-
-- (void)updateUserLatitude:(NSString*)latitude Longitude:(NSString*)longitude withFacebookID:(NSString*)facebook_id
-{
-    NSString *updatePath = [NSString stringWithFormat:@"%@/user/update", serverURL];
-    
-    //if facebook user
-    if ([FBSDKAccessToken currentAccessToken]) {
-        NSLog(@"%@", longitude);
-        NSLog(@"%@", latitude);
-        
-        NSDictionary *locationInfo = [[NSDictionary alloc] initWithObjectsAndKeys:facebook_id, @"facebook_id", [[FBSDKAccessToken currentAccessToken] tokenString], @"auth_token", longitude, @"lng", latitude, @"lat", nil];
-        NSLog([locationInfo description]);
-        NSString *serverReply = [Utils sendRequestToURL:updatePath
-                      withData:locationInfo
-                    withMethod:@"PUT"];
-        NSLog(@"facebook user update location reply: %@",serverReply);
-    }else {
-        //if email user
-        NSDictionary *locationInfo = [[NSDictionary alloc] initWithObjectsAndKeys:[[NSUserDefaults standardUserDefaults] objectForKey:@"username"], @"username", [[NSUserDefaults standardUserDefaults] objectForKey:@"password"], @"password", longitude, @"lng", latitude, @"lat", nil];
-        NSLog([locationInfo description]);
-        NSString *serverReply = [Utils sendRequestToURL:updatePath
-                      withData:locationInfo
-                    withMethod:@"PUT"];
-        NSLog(@"Email user update location reply: %@", serverReply);
-    }
 }
 
 #pragma mark - user log out
 
 /**
  Log out button for user logged in with email
+ 
  @param sender
         the log out button view
 */

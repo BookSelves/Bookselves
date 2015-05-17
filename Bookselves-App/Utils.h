@@ -20,4 +20,6 @@
 
 + (NSDictionary*)serverJsonReplyParser:(NSString*)serverReply;
 
++ (void)updateUserInfo:(NSDictionary*)userInfo;
+
 @end

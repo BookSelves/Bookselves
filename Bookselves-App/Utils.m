@@ -7,6 +7,7 @@
 //
 
 #import "Utils.h"
+#import "constants.h"
 
 @implementation Utils
 
@@ -14,11 +15,10 @@
 
 /**
  Append information in dictonary to URL, used for user verification
- @param dictionary
- A NSDictionary that contains needed info to append to URL
- @param url
- The original URL
- @code
+ 
+ @param dictionary  A NSDictionary that contains needed info to append to URL
+ @param url The original URL
+ @code  
  signInInputData --> [@"username":@"user_name", @"password":@"user_password"]
  [self appendEncodedDictionary:signInInputData ToURL:@"http://example.com/user/verify?"] --> @"http://example.com/user/verify?username=user_name&password=user_password"
  @endcode
@@ -30,8 +30,8 @@
 
 /**
  Turn information in dictionary to parameters of URL
- @param dictionary
- The NSDictionary containing query information
+ 
+ @param dictionary  The NSDictionary containing query information
  @code
  dictionary --> [@"username":@"user_name", @"password":@"user_password"]
  NSString* output = [self turnDictionaryIntoParamsOfURL:dictionary]
@@ -55,8 +55,8 @@
 
 /**
  encode dictionary into NSData
- @param dictionary
- NSDictionary
+ 
+ @param dictionary  NSDictionary
  */
 + (NSData*)encodeDictionary:(NSDictionary*)dictionary
 {
@@ -67,12 +67,10 @@
 
 /**
  send HTTP request
- @param url
- endpoint of server
- @param data
- data in the body of HTTP request
- @param method
- "GET", "POST", "PATCH", "DELETE"
+ 
+ @param url endpoint of server
+ @param data    data in the body of HTTP request
+ @param method  "GET", "POST", "PATCH", "DELETE"
  */
 + (NSString *)sendRequestToURL:(NSString *)url withData:(NSDictionary *)data withMethod: (NSString *)method
 {
@@ -93,8 +91,8 @@
 
 /**
  parse server reply from JSON format to NSDictionary
- @param serverReply
- the reply in JSON format sent back from server
+ 
+ @param serverReply the reply in JSON format sent back from server
  @return key-value pair of JSON data in NSDictionary
  */
 + (NSDictionary*)serverJsonReplyParser:(NSString*)serverReply
@@ -102,7 +100,20 @@
     return (NSDictionary *)[NSJSONSerialization JSONObjectWithData:[serverReply dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
 }
 
-
+/**
+ *  Update user information to server
+ *
+ *  @param userInfo NSDictionary containing user information
+ */
++ (void)updateUserInfo:(NSDictionary*)userInfo
+{
+    NSLog([userInfo description]);
+    
+    NSString *serverReply = [Utils sendRequestToURL:updateUserURL
+                                           withData:userInfo
+                                         withMethod:@"PUT"];
+    NSLog(@"user info update server reply: %@", serverReply);
+}
 
 
 @end
