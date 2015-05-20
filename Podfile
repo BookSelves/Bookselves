@@ -18,5 +18,4 @@ target 'Bookselves-AppTests' do
 
 end
 
-xcodeproj '/Users/junyuwang/Desktop/Bookselves/Bookselves-App/Bookselves-App.xcodeproj/'
 

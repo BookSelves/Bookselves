@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0510"
+   LastUpgradeVersion = "0640"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "C8585480A3E75647BEE7FCCF"
+               BlueprintIdentifier = "43C1604559BC6D761144FF49"
                BuildableName = "libPods-Bookselves-App-AFAmazonS3Manager.a"
                BlueprintName = "Pods-Bookselves-App-AFAmazonS3Manager"
                ReferencedContainer = "container:Pods.xcodeproj">

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0510"
+   LastUpgradeVersion = "0640"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "91E9693DFDFFC8B3F437103E"
+               BlueprintIdentifier = "E1E573340ABFCBFDF2BB21A7"
                BuildableName = "libPods-Bookselves-App-TMCache.a"
                BlueprintName = "Pods-Bookselves-App-TMCache"
                ReferencedContainer = "container:Pods.xcodeproj">

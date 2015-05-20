@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0510"
+   LastUpgradeVersion = "0640"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "6BB5D2B894658E3688A45F0E"
+               BlueprintIdentifier = "AAFA7E996C6DFCA163591BDF"
                BuildableName = "libPods-Bookselves-App-AWSS3.a"
                BlueprintName = "Pods-Bookselves-App-AWSS3"
                ReferencedContainer = "container:Pods.xcodeproj">

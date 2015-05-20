@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0510"
+   LastUpgradeVersion = "0640"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "E7EBCCC568851589122A34A0"
+               BlueprintIdentifier = "761B995822BE61ACBACE5C4E"
                BuildableName = "libPods-Bookselves-App-UICKeyChainStore.a"
                BlueprintName = "Pods-Bookselves-App-UICKeyChainStore"
                ReferencedContainer = "container:Pods.xcodeproj">

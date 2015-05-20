@@ -226,8 +226,6 @@ static const int profile_image_size = 200;
             
             [self setImageFromFilePath:path toImageView:imageView]; //if upload successfully, set as profile picture
             
-            // FIXME: incorrect parameter error when updaing
-            
             NSDictionary *userInfoWithProfilePictureURL = [[NSDictionary alloc] initWithObjectsAndKeys:[[NSUserDefaults standardUserDefaults] objectForKey:@"username"], @"username", [[NSUserDefaults standardUserDefaults] objectForKey:@"password"], @"password", imageURLinS3, @"profile_url", nil];
             
             [Utils updateUserInfo:userInfoWithProfilePictureURL];
@@ -365,8 +363,6 @@ static const int profile_image_size = 200;
                                              if (status == INTULocationStatusSuccess) {
                                                  NSString *latitude = [NSString stringWithFormat:@"%f", currentLocation.coordinate.latitude];
                                                  NSString *longitude = [NSString stringWithFormat:@"%f", currentLocation.coordinate.longitude];
-   
-                                                 // FIXME: incorrect parameter when updaing user location
                                                  
                                                  if ([FBSDKAccessToken currentAccessToken]) {
                                                      NSDictionary *locationInfo = [[NSDictionary alloc] initWithObjectsAndKeys:[NSString stringWithFormat:@"%@",facebook_id], @"facebook_id", [[FBSDKAccessToken currentAccessToken] tokenString], @"auth_token", longitude, @"lng", latitude, @"lat", nil];
@@ -389,8 +385,7 @@ static const int profile_image_size = 200;
                                                 [alert show];
                                                 NSString *latitude = [NSString stringWithFormat:@"%f", currentLocation.coordinate.latitude];
                                                 NSString *longitude = [NSString stringWithFormat:@"%f", currentLocation.coordinate.longitude];
-                                                
-                                                // FIXME: incorrect parameter when updaing user location
+                                            
                                                 
                                                 if ([FBSDKAccessToken currentAccessToken]) {
                                                     NSDictionary *locationInfo = [[NSDictionary alloc] initWithObjectsAndKeys:[NSString stringWithFormat:@"%@",facebook_id], @"facebook_id", [[FBSDKAccessToken currentAccessToken] tokenString], @"auth_token", longitude, @"lng", latitude, @"lat", nil];

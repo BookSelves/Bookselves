@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0510"
+   LastUpgradeVersion = "0640"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "45E14CFBA215AE6A76793FFA"
+               BlueprintIdentifier = "07868C8B794657F40C8BF3BA"
                BuildableName = "libPods-Bookselves-App-Reachability.a"
                BlueprintName = "Pods-Bookselves-App-Reachability"
                ReferencedContainer = "container:Pods.xcodeproj">

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0510"
+   LastUpgradeVersion = "0640"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "37AD2CC77CB75D980D41DE33"
+               BlueprintIdentifier = "110F305EE3154BFF4C67250A"
                BuildableName = "libPods-Bookselves-App-QBImagePickerController.a"
                BlueprintName = "Pods-Bookselves-App-QBImagePickerController"
                ReferencedContainer = "container:Pods.xcodeproj">
