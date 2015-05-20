@@ -369,11 +369,11 @@ static const int profile_image_size = 200;
                                                  // FIXME: incorrect parameter when updaing user location
                                                  
                                                  if ([FBSDKAccessToken currentAccessToken]) {
-                                                     NSDictionary *locationInfo = [[NSDictionary alloc] initWithObjectsAndKeys:facebook_id, @"facebook_id", [[FBSDKAccessToken currentAccessToken] tokenString], @"auth_token", longitude, @"lng", latitude, @"lat", nil];
+                                                     NSDictionary *locationInfo = [[NSDictionary alloc] initWithObjectsAndKeys:[NSString stringWithFormat:@"%@",facebook_id], @"facebook_id", [[FBSDKAccessToken currentAccessToken] tokenString], @"auth_token", longitude, @"lng", latitude, @"lat", nil];
                                                      
                                                      [Utils updateUserInfo:locationInfo];
                                                  }else {
-                                                     NSDictionary *locationInfo = [[NSDictionary alloc] initWithObjectsAndKeys:[[NSUserDefaults standardUserDefaults] objectForKey:@"username"], @"username", [[NSUserDefaults standardUserDefaults] objectForKey:@"password"], @"password", longitude, @"lng", latitude, @"lat", nil];
+                                                     NSDictionary *locationInfo = [[NSDictionary alloc] initWithObjectsAndKeys:[[NSUserDefaults standardUserDefaults] objectForKey:@"username"], @"username", [NSString stringWithFormat:@"%@", [[NSUserDefaults standardUserDefaults] objectForKey:@"password"]], @"password", longitude, @"lng", latitude, @"lat", nil];
                                                      
                                                      [Utils updateUserInfo:locationInfo];
                                                  }
@@ -393,10 +393,10 @@ static const int profile_image_size = 200;
                                                 // FIXME: incorrect parameter when updaing user location
                                                 
                                                 if ([FBSDKAccessToken currentAccessToken]) {
-                                                    NSDictionary *locationInfo = [[NSDictionary alloc] initWithObjectsAndKeys:facebook_id, @"facebook_id", [[FBSDKAccessToken currentAccessToken] tokenString], @"auth_token", longitude, @"lng", latitude, @"lat", nil];
+                                                    NSDictionary *locationInfo = [[NSDictionary alloc] initWithObjectsAndKeys:[NSString stringWithFormat:@"%@",facebook_id], @"facebook_id", [[FBSDKAccessToken currentAccessToken] tokenString], @"auth_token", longitude, @"lng", latitude, @"lat", nil];
                                                     [Utils updateUserInfo:locationInfo];
                                                 }else {
-                                                    NSDictionary *locationInfo = [[NSDictionary alloc] initWithObjectsAndKeys:[[NSUserDefaults standardUserDefaults] objectForKey:@"username"], @"username", [[NSUserDefaults standardUserDefaults] objectForKey:@"password"], @"password", longitude, @"lng", latitude, @"lat", nil];
+                                                    NSDictionary *locationInfo = [[NSDictionary alloc] initWithObjectsAndKeys:[[NSUserDefaults standardUserDefaults] objectForKey:@"username"], @"username", [NSString stringWithFormat:@"%@", [[NSUserDefaults standardUserDefaults] objectForKey:@"password"]], @"password", longitude, @"lng", latitude, @"lat", nil];
                          
                                                     [Utils updateUserInfo:locationInfo];
                                                 }

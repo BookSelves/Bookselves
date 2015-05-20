@@ -76,6 +76,10 @@
 {
     NSMutableURLRequest *urlRequest = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:url]];
     [urlRequest setHTTPMethod:method];
+    if([method isEqualToString:@"PUT"] || [method isEqualToString:@"DELETE"])
+    {
+        [urlRequest setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
+    }
     NSData *httpData = [self encodeDictionary:data];
     [urlRequest setHTTPBody:httpData];
     NSHTTPURLResponse *response;
