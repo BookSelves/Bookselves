@@ -11,10 +11,12 @@
 @implementation constants
 
 NSString* const serverURL = @"http://bookselves.herokuapp.com";
-NSString* const createUSerURL =@"http://bookselves.herokuapp.com/user/create";
-NSString* const verifyUSerURL =@"http://bookselves.herokuapp.com/user/verify";
-NSString* const updateUSerURL =@"http://bookselves.herokuapp.com/user/update";
-NSString* const getUSerURLwithoutID =@"http://bookselves.herokuapp.com/user/";
+NSString* const createUserURL =@"http://bookselves.herokuapp.com/user/create";
+NSString* const verifyUserURL =@"http://bookselves.herokuapp.com/user/verify";
+NSString* const updateUserURL =@"http://bookselves.herokuapp.com/user/update";
+NSString* const getUserURLwithoutID =@"http://bookselves.herokuapp.com/user/";
+
+NSString* const s3BucketName = @"bookselves-user-profile-pictures";
 
 
 @end

@@ -4,12 +4,87 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
+		<key>Pods-Bookselves-App-AFAmazonS3Manager.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Pods-Bookselves-App-AFNetworking.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Pods-Bookselves-App-AWSCognito.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Pods-Bookselves-App-AWSCore.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Pods-Bookselves-App-AWSS3.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>Pods-Bookselves-App-Bolts.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
 		</dict>
 		<key>Pods-Bookselves-App-Facebook-iOS-SDK.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Pods-Bookselves-App-GZIP.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Pods-Bookselves-App-INTULocationManager.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Pods-Bookselves-App-Mantle.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Pods-Bookselves-App-QBImagePickerController-QBImagePicker.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Pods-Bookselves-App-QBImagePickerController.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Pods-Bookselves-App-Reachability.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Pods-Bookselves-App-SDWebImage.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Pods-Bookselves-App-TMCache.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Pods-Bookselves-App-UICKeyChainStore.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Pods-Bookselves-App-XMLDictionary.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
@@ -22,17 +97,92 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>10A9DB652E26E22E20604559</key>
+		<key>365A21C6F3BDA4B7CF679E14</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>45FACD9E6955BD0099CF0D0B</key>
+		<key>37AD2CC77CB75D980D41DE33</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>BF88D77FF9FD78797E4625F4</key>
+		<key>45E14CFBA215AE6A76793FFA</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>54D0298D84A28364F2F53CA4</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>5B3A866BB6C358DFD9278A49</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>638F5467AE454CE42296F863</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>6BB5D2B894658E3688A45F0E</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>784662EE1387BE131897E29F</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>86DE14D2640224770F248324</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>8F9084B70B8F4088A804033A</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>91E9693DFDFFC8B3F437103E</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>A5AFC19257B4431DD8384340</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>AD6FBDD9985AAA71616C6AC3</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>C8585480A3E75647BEE7FCCF</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>D9D1413D412304BB53F05C21</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>E7EBCCC568851589122A34A0</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>EAF18BEF14A30EC789A6102D</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>FA7EFEE86F2B27EDA1C31110</key>
 		<dict>
 			<key>primary</key>
 			<true/>

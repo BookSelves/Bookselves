@@ -22,44 +22,74 @@
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                                 <variation key="widthClass=compact" fixedFrame="YES">
-                                    <rect key="frame" x="16" y="28" width="284" height="21"/>
+                                    <rect key="frame" x="72" y="294" width="284" height="21"/>
                                 </variation>
                             </label>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Jjo-XH-bCh" customClass="FBSDKLoginButton">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <variation key="widthClass=compact" fixedFrame="YES">
-                                    <rect key="frame" x="85" y="454" width="230" height="43"/>
-                                </variation>
-                            </view>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Q2H-Hs-DB9">
                                 <rect key="frame" x="-23" y="-15" width="46" height="30"/>
-                                <color key="backgroundColor" red="1" green="0.16449590439618111" blue="0.20058041051603981" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="backgroundColor" red="1" green="0.40247707602365157" blue="0.46552670691100928" alpha="1" colorSpace="calibratedRGB"/>
                                 <state key="normal" title="Log Out">
                                     <color key="titleColor" red="0.96133033615531172" green="1" blue="0.98218232376709491" alpha="1" colorSpace="calibratedRGB"/>
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <variation key="widthClass=compact" fixedFrame="YES">
-                                    <rect key="frame" x="85" y="390" width="230" height="40"/>
+                                    <rect key="frame" x="72" y="519" width="256" height="40"/>
                                 </variation>
                                 <connections>
                                     <action selector="normalUserLogoutButtonHandler:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="WHj-eg-4sX"/>
                                 </connections>
                             </button>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="UUs-N4-KjT" customClass="FBSDKProfilePictureView">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <variation key="widthClass=compact" fixedFrame="YES">
+                                    <rect key="frame" x="82" y="48" width="237" height="189"/>
+                                </variation>
+                            </view>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Email:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sdL-gn-8II">
                                 <rect key="frame" x="0.0" y="-21" width="42" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                                 <variation key="widthClass=compact" fixedFrame="YES">
-                                    <rect key="frame" x="16" y="57" width="284" height="21"/>
+                                    <rect key="frame" x="72" y="323" width="284" height="21"/>
                                 </variation>
                             </label>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="UUs-N4-KjT" customClass="FBSDKProfilePictureView">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="G0a-fT-K4e">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                                <subviews>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="default_user_profile_picture" translatesAutoresizingMaskIntoConstraints="NO" id="Jl2-gi-RSU">
+                                        <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
+                                        <variation key="widthClass=compact" fixedFrame="YES">
+                                            <rect key="frame" x="119" y="74" width="131" height="117"/>
+                                        </variation>
+                                    </imageView>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="X2x-mG-XCK">
+                                        <rect key="frame" x="-23" y="-15" width="46" height="30"/>
+                                        <state key="normal" title="Change">
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <variation key="widthClass=compact" fixedFrame="YES">
+                                            <rect key="frame" x="129" y="161" width="54" height="30"/>
+                                        </variation>
+                                        <connections>
+                                            <action selector="changeProfilePictureButtonTouchedHandler:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="TKj-Ew-vHU"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <variation key="default">
+                                    <mask key="subviews">
+                                        <exclude reference="Jl2-gi-RSU"/>
+                                        <exclude reference="X2x-mG-XCK"/>
+                                    </mask>
+                                </variation>
                                 <variation key="widthClass=compact" fixedFrame="YES">
-                                    <rect key="frame" x="16" y="86" width="237" height="189"/>
+                                    <rect key="frame" x="16" y="20" width="368" height="266"/>
+                                    <mask key="subviews">
+                                        <include reference="Jl2-gi-RSU"/>
+                                        <include reference="X2x-mG-XCK"/>
+                                    </mask>
                                 </variation>
                             </view>
                         </subviews>
@@ -67,32 +97,123 @@
                         <variation key="default">
                             <mask key="subviews">
                                 <exclude reference="pQD-mu-NDj"/>
-                                <exclude reference="Jjo-XH-bCh"/>
                                 <exclude reference="Q2H-Hs-DB9"/>
-                                <exclude reference="sdL-gn-8II"/>
                                 <exclude reference="UUs-N4-KjT"/>
+                                <exclude reference="sdL-gn-8II"/>
+                                <exclude reference="G0a-fT-K4e"/>
                             </mask>
                         </variation>
                         <variation key="widthClass=compact">
                             <mask key="subviews">
                                 <include reference="pQD-mu-NDj"/>
-                                <include reference="Jjo-XH-bCh"/>
                                 <include reference="Q2H-Hs-DB9"/>
-                                <include reference="sdL-gn-8II"/>
                                 <include reference="UUs-N4-KjT"/>
+                                <include reference="sdL-gn-8II"/>
+                                <include reference="G0a-fT-K4e"/>
                             </mask>
                         </variation>
                     </view>
                     <connections>
-                        <outlet property="facebookLoginButton" destination="Jjo-XH-bCh" id="zYX-ap-CkA"/>
+                        <outlet property="emailUserProfilePicture" destination="Jl2-gi-RSU" id="Rri-jC-99q"/>
+                        <outlet property="emailUserProfilePictureView" destination="G0a-fT-K4e" id="sQL-XN-ZcL"/>
                         <outlet property="normalUserLogoutButton" destination="Q2H-Hs-DB9" id="sUc-QT-Fpi"/>
                         <outlet property="userEmailLabel" destination="sdL-gn-8II" id="dus-5b-KZc"/>
                         <outlet property="userNameLabel" destination="pQD-mu-NDj" id="HgH-gv-k7g"/>
-                        <segue destination="I4h-hF-W56" kind="presentation" identifier="pop up login view" id="4eM-vF-711"/>
+                        <segue destination="Uul-Wt-AIF" kind="presentation" identifier="pop up login view" id="0H4-1b-5HW"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="270" y="726"/>
+        </scene>
+        <!--Sign Up And Log In View Controller-->
+        <scene sceneID="vIY-aJ-cIz">
+            <objects>
+                <viewController id="Uul-Wt-AIF" customClass="SignUpAndLogInViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="0BV-8f-i2h"/>
+                        <viewControllerLayoutGuide type="bottom" id="aTM-hI-fMm"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="3d5-LU-vjL">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="98S-SS-3Uf">
+                                <rect key="frame" x="-23" y="-15" width="46" height="30"/>
+                                <color key="backgroundColor" red="0.38608811990296033" green="0.54704445239552679" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <state key="normal" title="Sign In">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <variation key="widthClass=compact" fixedFrame="YES">
+                                    <rect key="frame" x="74" y="457" width="99" height="42"/>
+                                </variation>
+                                <connections>
+                                    <action selector="facebookSignUpButtonTouchedHandler:" destination="Uul-Wt-AIF" eventType="touchUpInside" id="HGu-48-Vuq"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="93M-No-068">
+                                <rect key="frame" x="-23" y="-15" width="46" height="30"/>
+                                <color key="backgroundColor" red="1" green="0.45790465255748258" blue="0.6178000574549789" alpha="1" colorSpace="calibratedRGB"/>
+                                <state key="normal" title="Sign In">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <variation key="widthClass=compact" fixedFrame="YES">
+                                    <rect key="frame" x="228" y="457" width="99" height="42"/>
+                                </variation>
+                                <connections>
+                                    <segue destination="I4h-hF-W56" kind="show" identifier="push to sign in view" id="nck-6t-5Hl"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Don't have an account?" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uW8-6r-vr9">
+                                <rect key="frame" x="0.0" y="-21" width="42" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                                <variation key="widthClass=compact" fixedFrame="YES">
+                                    <rect key="frame" x="74" y="526" width="190" height="21"/>
+                                </variation>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="F79-6O-MPy">
+                                <rect key="frame" x="-23" y="-15" width="46" height="30"/>
+                                <state key="normal" title="Sign up">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <variation key="widthClass=compact" fixedFrame="YES">
+                                    <rect key="frame" x="263" y="522" width="53" height="30"/>
+                                </variation>
+                                <connections>
+                                    <segue destination="I4h-hF-W56" kind="show" identifier="push to sign up view" id="PAB-Jg-KKX"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <variation key="default">
+                            <mask key="subviews">
+                                <exclude reference="98S-SS-3Uf"/>
+                                <exclude reference="93M-No-068"/>
+                                <exclude reference="uW8-6r-vr9"/>
+                                <exclude reference="F79-6O-MPy"/>
+                            </mask>
+                        </variation>
+                        <variation key="widthClass=compact">
+                            <mask key="subviews">
+                                <include reference="98S-SS-3Uf"/>
+                                <include reference="93M-No-068"/>
+                                <include reference="uW8-6r-vr9"/>
+                                <include reference="F79-6O-MPy"/>
+                            </mask>
+                        </variation>
+                    </view>
+                    <connections>
+                        <outlet property="emailSignUpButton" destination="93M-No-068" id="sMI-qY-fam"/>
+                        <outlet property="facebookSignUpButton" destination="98S-SS-3Uf" id="yjI-Wx-CH6"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="tBq-9b-4Jd" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1857" y="726"/>
         </scene>
         <!--Login View Controller-->
         <scene sceneID="Wch-GP-x8X">
@@ -106,13 +227,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="PX6-zA-1hq" customClass="FBSDKLoginButton">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <variation key="widthClass=compact" fixedFrame="YES">
-                                    <rect key="frame" x="56" y="446" width="288" height="43"/>
-                                </variation>
-                            </view>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Email:" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="U35-gy-0N8">
                                 <rect key="frame" x="0.0" y="-30" width="97" height="30"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -162,6 +276,18 @@
                                     <rect key="frame" x="49" y="236" width="205" height="21"/>
                                 </variation>
                             </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kJx-Ui-JWW">
+                                <rect key="frame" x="-23" y="-15" width="46" height="30"/>
+                                <state key="normal" title="Back">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <variation key="widthClass=compact" fixedFrame="YES">
+                                    <rect key="frame" x="16" y="28" width="35" height="30"/>
+                                </variation>
+                                <connections>
+                                    <action selector="backButtonTouchedHandler:" destination="I4h-hF-W56" eventType="touchUpInside" id="pId-Gs-caw"/>
+                                </connections>
+                            </button>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6Vg-Hn-C6Q">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                                 <subviews>
@@ -170,7 +296,7 @@
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits"/>
                                         <variation key="widthClass=compact" fixedFrame="YES">
-                                            <rect key="frame" x="31" y="41" width="276" height="30"/>
+                                            <rect key="frame" x="31" y="0.0" width="276" height="30"/>
                                         </variation>
                                     </textField>
                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Password:" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="5VV-6H-3QX">
@@ -178,19 +304,19 @@
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits"/>
                                         <variation key="widthClass=compact" fixedFrame="YES">
-                                            <rect key="frame" x="30" y="79" width="276" height="30"/>
+                                            <rect key="frame" x="30" y="38" width="276" height="30"/>
                                         </variation>
                                     </textField>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="66a-MV-2dT">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4Fv-qG-KYh">
                                         <rect key="frame" x="-23" y="-15" width="46" height="30"/>
-                                        <state key="normal" title="Sign In">
+                                        <state key="normal" title="Sign up">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                         <variation key="widthClass=compact" fixedFrame="YES">
-                                            <rect key="frame" x="31" y="126" width="48" height="30"/>
+                                            <rect key="frame" x="228" y="165" width="53" height="30"/>
                                         </variation>
                                         <connections>
-                                            <action selector="signInButtonHandler:" destination="I4h-hF-W56" eventType="touchUpInside" id="y9T-VS-7ba"/>
+                                            <action selector="signUpButtonHandler:" destination="I4h-hF-W56" eventType="touchUpInside" id="8eW-NX-kbg"/>
                                         </connections>
                                     </button>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Don't have an account? " lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZLP-28-xVX">
@@ -199,19 +325,19 @@
                                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                         <nil key="highlightedColor"/>
                                         <variation key="widthClass=compact" fixedFrame="YES">
-                                            <rect key="frame" x="34" y="186" width="186" height="60"/>
+                                            <rect key="frame" x="34" y="150" width="186" height="60"/>
                                         </variation>
                                     </label>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4Fv-qG-KYh">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="66a-MV-2dT">
                                         <rect key="frame" x="-23" y="-15" width="46" height="30"/>
-                                        <state key="normal" title="Sign up">
+                                        <state key="normal" title="Sign In">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                         <variation key="widthClass=compact" fixedFrame="YES">
-                                            <rect key="frame" x="228" y="201" width="53" height="30"/>
+                                            <rect key="frame" x="31" y="76" width="48" height="30"/>
                                         </variation>
                                         <connections>
-                                            <action selector="signUpButtonHandler:" destination="I4h-hF-W56" eventType="touchUpInside" id="8eW-NX-kbg"/>
+                                            <action selector="signInButtonHandler:" destination="I4h-hF-W56" eventType="touchUpInside" id="y9T-VS-7ba"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -220,19 +346,19 @@
                                     <mask key="subviews">
                                         <exclude reference="w2L-t6-M5F"/>
                                         <exclude reference="5VV-6H-3QX"/>
-                                        <exclude reference="66a-MV-2dT"/>
-                                        <exclude reference="ZLP-28-xVX"/>
                                         <exclude reference="4Fv-qG-KYh"/>
+                                        <exclude reference="ZLP-28-xVX"/>
+                                        <exclude reference="66a-MV-2dT"/>
                                     </mask>
                                 </variation>
                                 <variation key="widthClass=compact" fixedFrame="YES">
-                                    <rect key="frame" x="16" y="28" width="363" height="358"/>
+                                    <rect key="frame" x="19" y="66" width="363" height="511"/>
                                     <mask key="subviews">
                                         <include reference="w2L-t6-M5F"/>
                                         <include reference="5VV-6H-3QX"/>
-                                        <include reference="66a-MV-2dT"/>
-                                        <include reference="ZLP-28-xVX"/>
                                         <include reference="4Fv-qG-KYh"/>
+                                        <include reference="ZLP-28-xVX"/>
+                                        <include reference="66a-MV-2dT"/>
                                     </mask>
                                 </variation>
                             </view>
@@ -240,29 +366,33 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <variation key="default">
                             <mask key="subviews">
-                                <exclude reference="PX6-zA-1hq"/>
                                 <exclude reference="U35-gy-0N8"/>
                                 <exclude reference="ULF-2i-zKn"/>
                                 <exclude reference="nNv-Eh-Q6d"/>
                                 <exclude reference="fY6-7R-egU"/>
                                 <exclude reference="SA9-5x-0si"/>
+                                <exclude reference="kJx-Ui-JWW"/>
                                 <exclude reference="6Vg-Hn-C6Q"/>
                             </mask>
                         </variation>
                         <variation key="widthClass=compact">
                             <mask key="subviews">
-                                <include reference="PX6-zA-1hq"/>
                                 <include reference="U35-gy-0N8"/>
                                 <include reference="ULF-2i-zKn"/>
                                 <include reference="nNv-Eh-Q6d"/>
                                 <include reference="fY6-7R-egU"/>
                                 <include reference="SA9-5x-0si"/>
+                                <include reference="kJx-Ui-JWW"/>
                                 <include reference="6Vg-Hn-C6Q"/>
                             </mask>
                         </variation>
                     </view>
                     <connections>
+                        <outlet property="backButton" destination="kJx-Ui-JWW" id="7Sl-Ky-iHc"/>
                         <outlet property="goToSignInViewButton" destination="fY6-7R-egU" id="KmR-lr-0oM"/>
+                        <outlet property="goToSignInViewLabel" destination="SA9-5x-0si" id="MOD-Qj-3z0"/>
+                        <outlet property="goToSignUpViewButton" destination="4Fv-qG-KYh" id="crd-K5-jD5"/>
+                        <outlet property="goToSignUpViewLabel" destination="ZLP-28-xVX" id="7XN-wq-ZHN"/>
                         <outlet property="inputEmail" destination="U35-gy-0N8" id="UQc-lf-aUE"/>
                         <outlet property="inputEmail_signIn" destination="w2L-t6-M5F" id="vFQ-GV-nt9"/>
                         <outlet property="inputPassword" destination="ULF-2i-zKn" id="NEJ-cR-aAK"/>
@@ -270,11 +400,18 @@
                         <outlet property="loginView" destination="6Vg-Hn-C6Q" id="Ogy-uK-QBo"/>
                         <outlet property="registerButton" destination="nNv-Eh-Q6d" id="ibJ-yM-oEp"/>
                         <outlet property="signInButton" destination="66a-MV-2dT" id="Rxv-kC-Wwo"/>
+                        <segue destination="vXZ-lx-hvc" kind="show" identifier="push to profile view" id="fXh-fu-8Gf"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Eh2-q1-ZoK" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1531.5" y="319"/>
+            <point key="canvasLocation" x="988.5" y="-43"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="default_user_profile_picture" width="100" height="100"/>
+    </resources>
+    <inferredMetricsTieBreakers>
+        <segue reference="PAB-Jg-KKX"/>
+    </inferredMetricsTieBreakers>
 </document>

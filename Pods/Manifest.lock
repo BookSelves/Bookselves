@@ -1,4 +1,36 @@
 PODS:
+  - AFAmazonS3Manager (3.2.1):
+    - AFNetworking/NSURLConnection (~> 2.4)
+  - AFNetworking/NSURLConnection (2.5.3):
+    - AFNetworking/Reachability
+    - AFNetworking/Security
+    - AFNetworking/Serialization
+  - AFNetworking/Reachability (2.5.3)
+  - AFNetworking/Security (2.5.3)
+  - AFNetworking/Serialization (2.5.3)
+  - AWSCognito (2.1.1):
+    - AWSCore (~> 2.1.1)
+    - Bolts (~> 1.1.0)
+    - Mantle (~> 1.4)
+    - Reachability (~> 3.1)
+    - UICKeyChainStore (~> 2.0)
+  - AWSCognitoSync (2.1.1):
+    - AWSCognito (= 2.1.1)
+    - AWSCore (~> 2.1.1)
+    - Bolts (~> 1.1.0)
+    - Mantle (~> 1.4)
+  - AWSCore (2.1.1):
+    - Bolts (~> 1.1.0)
+    - GZIP (~> 1.0.3)
+    - Mantle (~> 1.4)
+    - Reachability (~> 3.1)
+    - UICKeyChainStore (~> 2.0)
+    - XMLDictionary (~> 1.4.0)
+  - AWSS3 (2.1.1):
+    - AWSCore (= 2.1.1)
+    - Bolts (~> 1.1.0)
+    - Mantle (~> 1.4)
+    - TMCache (~> 1.2.1)
   - Bolts (1.1.5):
     - Bolts/AppLinks (= 1.1.5)
     - Bolts/Tasks (= 1.1.5)
@@ -21,12 +53,48 @@ PODS:
   - Facebook-iOS-SDK/ShareKit (4.0.1):
     - Bolts (~> 1.0)
     - Facebook-iOS-SDK/CoreKit
+  - GZIP (1.0.3)
+  - INTULocationManager (3.0.1)
+  - Mantle (1.5.4):
+    - Mantle/extobjc (= 1.5.4)
+  - Mantle/extobjc (1.5.4)
+  - QBImagePickerController (3.2.0)
+  - Reachability (3.2)
+  - SDWebImage (3.7.2):
+    - SDWebImage/Core (= 3.7.2)
+  - SDWebImage/Core (3.7.2)
+  - TMCache (1.2.4)
+  - UICKeyChainStore (2.0.4)
+  - XMLDictionary (1.4)
 
 DEPENDENCIES:
+  - AFAmazonS3Manager (~> 3.2)
+  - AWSCognito
+  - AWSCognitoSync
+  - AWSCore
+  - AWSS3
   - Facebook-iOS-SDK (~> 4.0)
+  - INTULocationManager (~> 3.0)
+  - QBImagePickerController (~> 3.2)
+  - SDWebImage (~> 3.7)
 
 SPEC CHECKSUMS:
+  AFAmazonS3Manager: 688f9238511bb86011159d0155fcda09838b0e0d
+  AFNetworking: e1d86c2a96bb5d2e7408da36149806706ee122fe
+  AWSCognito: c251f1f166c74343493451e238ca7157e1e33dda
+  AWSCognitoSync: b9dad0d509063f2faeb9302537cfa1d02a0b1762
+  AWSCore: 0e82eabc27a96d765b1e2ad4d30b96c1cd298300
+  AWSS3: 891d269735be0f3c63eab5a2d1ee9d788f2c64ee
   Bolts: aac24961496d504aa56fc267cde95162a71bac39
   Facebook-iOS-SDK: 6d05532c97e9c542f8d87f94b7f6ee217493d00b
+  GZIP: f0863fda354e8f83316508c0a2c7bbe385e39129
+  INTULocationManager: c27483113e1bbc5952ead6417f9b39824a240ebb
+  Mantle: 60acd0cd363e27d945bda0a6b8e90577112d28f3
+  QBImagePickerController: 75b3857b1307a3c01ce486559bc294f802ddec6c
+  Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
+  SDWebImage: 71b7cdc1d1721d6a82ed62889030225f2c249e29
+  TMCache: a93984b045a5ee84bd8941bd5e0b54296059cc52
+  UICKeyChainStore: 69eb0c3a6f669bccf16ba88de3b9069b71501361
+  XMLDictionary: f9f51601ba76678b594ab485f2b00ec1fed23724
 
 COCOAPODS: 0.36.3

@@ -15,5 +15,6 @@ extern NSString* const createUserURL;
 extern NSString* const verifyUserURL;
 extern NSString* const updateUserURL;
 extern NSString* const getUserURLwithoutID;
+extern NSString* const s3BucketName;
 
 @end
